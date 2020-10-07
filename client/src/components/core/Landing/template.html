@@ -1,4 +1,5 @@
 <div :class="['grey lighten-3', $style.root]">
+  <!-- 
   <v-responsive color="grey darken-3" :height="smallScreen ? 'auto' : '250px'" :class="$style.jumbotron">
     <v-container fill-height>
       <v-layout row align-center wrap>
@@ -19,7 +20,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-        <!-- iPads have width 768, so show controls on them -->
+        <!- - iPads have width 768, so show controls on them - ->
         <v-flex
           key="if-large-enough-screen"
           :xs4="!smallScreen"
@@ -157,5 +158,5 @@
     <div class="text-xs-center grey--text text--darken-2">
       &copy; {{ new Date().getFullYear() }} — Kitware, Inc.
     </div>
-  </v-footer>
-</div>
+  </v-footer> 
+--></div>

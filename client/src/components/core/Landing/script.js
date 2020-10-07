@@ -14,6 +14,11 @@ export default {
       return this.$vuetify.breakpoint.width < Breakpoints.md;
     },
   },
+  mounted() {
+    console.log('Francesc Landing mounted');
+    this.$emit('connect');
+    //console.log('Francesc Landing mounted connected');
+  },
   methods: {
     openSample(sample) {
       const urls = [];

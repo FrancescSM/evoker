@@ -119,6 +119,7 @@ export default class Client {
   }
 
   connect(config) {
+    console.log('Francesc connect \n', JSON.stringify(config));
     if (this.connection) {
       return Promise.reject(new Error('Need to disconnect before'));
     }
