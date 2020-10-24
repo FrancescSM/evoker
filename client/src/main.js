@@ -6,7 +6,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 
-import vtkURLExtract from 'vtk.js/Sources/Common/Core/URLExtract';
+//import vtkURLExtract from 'vtk.js/Sources/Common/Core/URLExtract';
 
 /* eslint-disable-next-line import/extensions */
 import 'typeface-roboto';
