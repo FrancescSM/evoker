@@ -64,14 +64,26 @@ Vue.use(Vuetify, {
  * Proxy config precedence (decreasing order):
  *   createViewer param, active proxy config, Generic config
  */
-function createConfigurationFromURLArgs(
-  addOn = { application: 'paraview-lite' }
+// function createConfigurationFromURLArgs(
+//   addOn = { application: 'paraview-lite' }
+// ) {
+//   return Object.assign({}, vtkURLExtract.extractURLParameters(), addOn);
+// }
+
+/**
+ * Evoker: modified version of createConfigurationFromURLArgs that has session harcoded and does not read it from url params
+ *
+ */
+function createHardcodedConfiguration(
+  session = { sessionURL: 'ws://localhost:8082/ws' },
+  addOn = { application: 'evoker' }
 ) {
-  return Object.assign({}, vtkURLExtract.extractURLParameters(), addOn);
+  return Object.assign({}, session, addOn);
 }
 
 const store = createStore();
-store.commit('PVL_NETWORK_CONFIG_SET', createConfigurationFromURLArgs());
+//store.commit('PVL_NETWORK_CONFIG_SET', createConfigurationFromURLArgs());
+store.commit('PVL_NETWORK_CONFIG_SET', createHardcodedConfiguration());
 registerModules(store);
 setInterval(() => store.dispatch('PVL_BUSY_UPDATE_PROGRESS', 1), 50);
 
