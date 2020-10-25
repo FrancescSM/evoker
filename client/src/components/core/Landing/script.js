@@ -15,9 +15,9 @@ export default {
     },
   },
   mounted() {
-    console.log('Francesc Landing mounted');
+    console.log('Evoker Landing mounted');
     this.$emit('connect');
-    //console.log('Francesc Landing mounted connected');
+    //console.log('Evoker Landing mounted connected');
   },
   methods: {
     openSample(sample) {

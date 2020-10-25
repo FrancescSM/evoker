@@ -6,7 +6,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 
-//import vtkURLExtract from 'vtk.js/Sources/Common/Core/URLExtract';
+import vtkURLExtract from 'vtk.js/Sources/Common/Core/URLExtract';
 
 /* eslint-disable-next-line import/extensions */
 import 'typeface-roboto';
@@ -64,26 +64,21 @@ Vue.use(Vuetify, {
  * Proxy config precedence (decreasing order):
  *   createViewer param, active proxy config, Generic config
  */
-// function createConfigurationFromURLArgs(
-//   addOn = { application: 'paraview-lite' }
-// ) {
-//   return Object.assign({}, vtkURLExtract.extractURLParameters(), addOn);
-// }
-
-/**
- * Evoker: modified version of createConfigurationFromURLArgs that has session harcoded and does not read it from url params
- *
- */
-function createHardcodedConfiguration(
-  session = { sessionURL: 'ws://localhost:8082/ws' },
-  addOn = { application: 'evoker' }
+function createConfigurationFromURLArgs(
+  addOn = { application: 'paraview-lite' }
 ) {
+  let session = vtkURLExtract.extractURLParameters();
+  if (Object.keys(session).length === 0 && session.constructor === Object) {
+    session = { sessionURL: 'ws://51.103.138.135:49773/ws' };
+    console.log('No params in URL, using hardcoded: ', session);
+  } else {
+    console.log('Params in URL: ', session);
+  }
   return Object.assign({}, session, addOn);
 }
 
 const store = createStore();
-//store.commit('PVL_NETWORK_CONFIG_SET', createConfigurationFromURLArgs());
-store.commit('PVL_NETWORK_CONFIG_SET', createHardcodedConfiguration());
+store.commit('PVL_NETWORK_CONFIG_SET', createConfigurationFromURLArgs());
 registerModules(store);
 setInterval(() => store.dispatch('PVL_BUSY_UPDATE_PROGRESS', 1), 50);
 
