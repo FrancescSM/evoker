@@ -28,11 +28,11 @@
         href="#"
         v-on:click.prevent="toggleLanding"
       >
-        <svg-icon
+        <!-- <svg-icon
           :icon="iconLogo"
           height="52px"
           style="margin-top: 6px"
-        />
+        /> -->
       </a>
       <span v-if="landingVisible" key="if-landingVisible">Go to app</span>
       <span v-else key="if-landingVisible">Back to landing page</span>
@@ -51,15 +51,11 @@
       <span>{{ errors.length }}</span>
       <span v-show="!smallScreen">error(s)</span>
     </v-btn>
-    <v-btn
-      :class="$style.toolbarButton"
-      flat
-      v-on:click="aboutDialog = true"
-    >
-      <!-- width of other icons in toolbar -->
+    <!-- <v-btn :class="$style.toolbarButton" flat v-on:click="aboutDialog = true">
+      <!- - width of other icons in toolbar - ->
       <svg-icon icon="kitware-logo" width="24px" />
       <span v-show="!smallScreen">About</span>
-    </v-btn>
+    </v-btn> -->
   </v-toolbar>
 
   <v-content :class="$style.appContent">
@@ -88,13 +84,9 @@
   <browser-issues />
 
   <!-- about dialog -->
-  <component
-    :is="dialogType"
-    v-model="aboutDialog"
-    max-width="50%"
-  >
+  <!-- <component :is="dialogType" v-model="aboutDialog" max-width="50%">
     <about-box v-on:close="aboutDialog = false" />
-  </component>
+  </component> -->
 
   <!-- error dialog-->
   <component
