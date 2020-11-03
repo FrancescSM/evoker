@@ -119,13 +119,14 @@ export default class Client {
   }
 
   connect(config) {
-    console.log('Evoker connect \n', JSON.stringify(config));
+    console.log('Evoker connect \n', JSON.stringify({ config }));
     if (this.connection) {
       return Promise.reject(new Error('Need to disconnect before'));
     }
     return new Promise((resolve, reject) => {
       this.smartConnect = SmartConnect.newInstance({ config });
       this.smartConnect.onConnectionReady((connection) => {
+        console.log('onConnectionReady');
         this.connection = connection;
         this.imageStream = vtkImageStream.newInstance();
         this.remote = {};
@@ -145,12 +146,14 @@ export default class Client {
         resolve(this);
       });
       this.smartConnect.onConnectionError((error) => {
+        console.log('connection error');
         if (this.connectionCallback) {
           this.connectionCallback('errored', error);
         }
         reject(error);
       });
       this.smartConnect.onConnectionClose((close) => {
+        console.log('connection close');
         if (this.connectionCallback) {
           this.connectionCallback('closed', close);
         }
