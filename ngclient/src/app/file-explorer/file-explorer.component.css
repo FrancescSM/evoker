@@ -18,7 +18,6 @@
 .file-or-folder-icon {
   width: 25px;
   height: 25px;
-  font-size: 12px;
 }
 
 .file-or-folder-name {
@@ -28,12 +27,6 @@
 .file-toolbar {
   font-size: 18px;
 }
-
-/* .file-or-folder-icon {
-  width: 15px;
-  height: 15px;
-  font-size: 10px;
-} */
 
 .pointer {
   cursor: pointer;

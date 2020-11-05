@@ -12,7 +12,7 @@
   <app-vis-element></app-vis-element>
 </div>
 <!-- <div style="padding: 100px; height: 100%; box-sizing: border-box;"> -->
-<div style="padding: 5px; height: 100%; box-sizing: border-box;">
+<div style="height: 100%; box-sizing: border-box;">
   <!-- <mat-card style="height: 100%; box-sizing: border-box; padding:0"> -->
   <file-explorer [fileElements]="fileElements | async" [path]="currentPath" [canNavigateUp]="canNavigateUp"
     (folderAdded)="addFolder($event)" (elementRemoved)="removeElement($event)"

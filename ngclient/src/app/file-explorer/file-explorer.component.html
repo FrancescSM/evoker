@@ -1,6 +1,6 @@
 <mat-toolbar class="file-toolbar" style="height:30px;">
   <mat-icon *ngIf="canNavigateUp" class="pointer" (click)="navigateUp()">arrow_back</mat-icon>
-  <span style="margin-left: 8px">{{path || 'Files'}}</span>
+  <span style="margin-left: 2px">{{path || 'Files'}}</span>
   <span class="spacer"></span>
   <!-- <mat-icon class="pointer" (click)="openNewFolderDialog()">create_new_folder</mat-icon> -->
 </mat-toolbar>
@@ -11,7 +11,7 @@
       <mat-grid-tile *ngFor="let element of fileElements" class=file-or-folder>
         <span [matMenuTriggerFor]="rootMenu" [matMenuTriggerData]="{element: element}"
           #menuTrigger="matMenuTrigger"></span>
-        <div fxLayout="row" fxLayoutAlign="space-between center" (click)="navigate(element)"
+        <div fxLayout="row" fxLayoutAlign="start stretch" (click)="navigate(element)"
           (contextmenu)="openMenu($event, menuTrigger)">
           <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="element.isFolder">folder</mat-icon>
           <mat-icon color="secondary" class="file-or-folder-icon pointer" *ngIf="!element.isFolder">insert_drive_file

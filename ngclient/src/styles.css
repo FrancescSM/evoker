@@ -3,6 +3,17 @@
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 .mat-grid-tile .mat-figure {
-  justify-content: flex-start !important ;
+  justify-content: flex-start !important;
   align-items: flex-start !important;
+}
+
+/* Material container (used in file explorer) */
+.container {
+  padding-right : 0px !important;
+  padding-left : 0px !important;
+}
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  padding: 0px 0px !important;
+  background: beige !important;
 }
