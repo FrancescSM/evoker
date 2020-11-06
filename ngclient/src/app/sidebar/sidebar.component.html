@@ -15,7 +15,7 @@
 <div style="height: 100%; box-sizing: border-box;">
   <!-- <mat-card style="height: 100%; box-sizing: border-box; padding:0"> -->
   <file-explorer [fileElements]="fileElements | async" [path]="currentPath" [canNavigateUp]="canNavigateUp"
-    (folderAdded)="addFolder($event)" (elementRemoved)="removeElement($event)"
+    (folderAdded)="addFolder($event)" (elementRemoved)="removeElement($event)" (elementSelected)="selectElement($event)"
     (navigatedDown)="navigateToFolder($event)" (navigatedUp)="navigateUp()" (elementRenamed)="renameElement($event)"
     (elementMoved)="moveElement($event)">
   </file-explorer>

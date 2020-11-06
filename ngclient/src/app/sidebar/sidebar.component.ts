@@ -95,6 +95,11 @@ export class SidebarComponent implements OnInit {
     this.updateFileElementQuery();
   }
 
+  selectElement(element: FileElement) {
+    console.log('selectElement ', element);
+    // this.updateFileElementQuery();
+  }
+
   moveElement(event: { element: FileElement; moveTo: FileElement }) {
     console.log('moveElement');
     this.fileService.update(event.element.id, { parent: event.moveTo.id });
@@ -126,7 +131,7 @@ export class SidebarComponent implements OnInit {
     this.currentPath = this.pushToPath(this.currentPath, element.name);
     this.canNavigateUp = true;
     // console.log('navigateToFolder2 currentRoot ', this.currentRoot);
-    // console.log('navigateToFolder3 currentPath ', this.currentPath);
+    console.log('navigateToFolder currentPath ', this.currentPath);
     let fileListing = this.vtkService.getFileListing();
     if (this.mapPathDiscovered[this.currentPath] === undefined){
       this.mapPathDiscovered[this.currentPath] = true;

@@ -18,6 +18,7 @@ export class FileExplorerComponent {
   @Input() path: string;
 
   @Output() folderAdded = new EventEmitter<{ name: string }>();
+  @Output() elementSelected = new EventEmitter<FileElement>();
   @Output() elementRemoved = new EventEmitter<FileElement>();
   @Output() elementRenamed = new EventEmitter<FileElement>();
   @Output() elementMoved = new EventEmitter<{ element: FileElement; moveTo: FileElement }>();
@@ -31,7 +32,10 @@ export class FileExplorerComponent {
   navigate(element: FileElement) {
     if (element.isFolder) {
       this.navigatedDown.emit(element);
+    }else{
+      this.elementSelected.emit(element);
     }
+
   }
 
   navigateUp() {
