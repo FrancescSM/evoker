@@ -9,10 +9,12 @@
   <div class="content" fxFlex fxLayout="row">
     <mat-grid-list cols="1" rowHeight="25px" fxFlex>
       <mat-grid-tile *ngFor="let element of fileElements" class=file-or-folder>
+        <!-- disable right-click context menu as we do not want move, rename or delete as of now
         <span [matMenuTriggerFor]="rootMenu" [matMenuTriggerData]="{element: element}"
           #menuTrigger="matMenuTrigger"></span>
         <div fxLayout="row" fxLayoutAlign="start stretch" (click)="navigate(element)"
-          (contextmenu)="openMenu($event, menuTrigger)">
+          (contextmenu)="openMenu($event, menuTrigger)"> -->
+        <div fxLayout="row" fxLayoutAlign="start stretch" (click)="navigate(element)">
           <mat-icon color="primary" class="file-or-folder-icon pointer" *ngIf="element.isFolder">folder</mat-icon>
           <mat-icon color="secondary" class="file-or-folder-icon pointer" *ngIf="!element.isFolder">insert_drive_file
           </mat-icon>
