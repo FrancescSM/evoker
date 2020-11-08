@@ -22,6 +22,7 @@ import { NewFolderDialogComponent } from './file-explorer/modals/new-folder-dial
 import { RenameDialogComponent } from './file-explorer/modals/rename-dialog/rename-dialog.component';
 import { MatCardModule } from '@angular/material/card';
 
+import { appStoreProviders } from './app.store'
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatCardModule
   ],
-  providers: [],
+  providers: [appStoreProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

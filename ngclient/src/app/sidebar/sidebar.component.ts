@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Observable } from 'rxjs'
 import { FileElement } from '../file-explorer/model/file-element'
 import { FileService } from '../service/file-service.service';
 import { VtkService } from '../service/vtk-service.service';
+
+import { Store } from 'redux';
+import { AppStore } from '../app.store'
+import { AppState } from '../app.state'
+import * as VTKActions from '../app.actions';
+
 
 @Component({
   selector: 'app-sidebar',
@@ -15,10 +21,20 @@ export class SidebarComponent implements OnInit {
   currentRoot: FileElement;
   currentPath: string;
   canNavigateUp: boolean = false;
-  mapPathDiscovered : { [key: string]: boolean} = {};
+  mapPathDiscovered: { [key: string]: boolean } = {};
 
   constructor(private fileService: FileService,
-    private vtkService: VtkService) {
+    private vtkService: VtkService
+    ,@Inject(AppStore) private store: Store<AppState>
+    ) {
+    // TODO: do we need to subscribe here?
+    store.subscribe(() => this.readState());
+    this.readState();
+  }
+
+  readState() {
+    const state: AppState = this.store.getState() as AppState;
+    console.log('readState ', state);
   }
 
   ngOnInit(): void {
@@ -63,18 +79,6 @@ export class SidebarComponent implements OnInit {
 
   // openFile() {
   //   console.log('openFile');
-  //   let fileListing = this.vtkService.getFileListing();
-  //   fileListing.listServerDirectory('.')
-  //     .then((listing) => {
-  //       const { dirs, files, groups, path } = listing;
-  //       console.log('dirs ', dirs, 'files ', files);
-  //       // this.files = files;
-  //       // this.groups = groups;
-  //       // this.directories = dirs;
-  //       // this.path = path;
-  //       // this.label = this.path.slice(-1)[0];
-  //     })
-  //     .catch(console.error);
   //   return true;
   // }
 
@@ -98,6 +102,34 @@ export class SidebarComponent implements OnInit {
   selectElement(element: FileElement) {
     console.log('selectElement ', element);
     // this.updateFileElementQuery();
+    let proxyManager = this.vtkService.getProxyManager();
+    proxyManager.open(element.name)
+      .then((readerProxy) => {
+        console.log('proxyManager ready ', readerProxy ) ;
+        let remote = this.vtkService.getRemote();
+        remote.Lite.getProxyName(readerProxy.id)
+        .then((info) => {
+          console.log('proxyName ready ', info);
+          this.store.dispatch(VTKActions.proxyNameSet(info));
+        })
+        .catch(console.error);
+        proxyManager.list()
+          .then(({ sources, view }) => {
+            console.log('proxyManager list sources ', sources);
+            console.log('proxyManager list view ', view);
+            this.store.dispatch(VTKActions.proxyPipeLineSet(sources));
+            //TODO only once
+            const needUI = true;
+            proxyManager.get(view, needUI)
+            .then((proxy) => {
+              console.log('proxyManager get ', proxy);
+            })
+            .catch(console.error);
+          })
+          .catch(console.error);
+      })
+      .catch(console.error);
+
   }
 
   moveElement(event: { element: FileElement; moveTo: FileElement }) {
@@ -133,7 +165,7 @@ export class SidebarComponent implements OnInit {
     // console.log('navigateToFolder2 currentRoot ', this.currentRoot);
     console.log('navigateToFolder currentPath ', this.currentPath);
     let fileListing = this.vtkService.getFileListing();
-    if (this.mapPathDiscovered[this.currentPath] === undefined){
+    if (this.mapPathDiscovered[this.currentPath] === undefined) {
       this.mapPathDiscovered[this.currentPath] = true;
       fileListing.listServerDirectory('HOME/' + this.currentPath)
         .then((listing) => {

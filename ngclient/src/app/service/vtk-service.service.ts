@@ -1,7 +1,23 @@
 import { Injectable } from '@angular/core';
 import SmartConnect from 'wslink/src/SmartConnect';
 import vtkImageStream from 'vtk.js/Sources/IO/Core/ImageStream';
+
+//import ColorManager from '../protocols/ColorManager';
 import FileListing from '../protocols/FileListing';
+//import KeyValuePairStore from '../protocols/KeyValuePairStore';
+//import MouseHandler from '../protocols/MouseHandler';
+//import ProgressUpdate from '../protocols/ProgressUpdate';
+import ProxyManager from '../protocols/ProxyManager';
+//import SaveData from '../protocols/SaveData';
+//import TimeHandler from '../protocols/TimeHandler';
+//import ViewPort from '../protocols/ViewPort';
+//import ViewPortGeometryDelivery from '../protocols/ViewPortGeometryDelivery';
+//import ViewPortImageDelivery from '../protocols/ViewPortImageDelivery';
+//import VtkGeometryDelivery from '../protocols/VtkGeometryDelivery';
+//import VtkImageDelivery from '../protocols/VtkImageDelivery';
+
+import Lite from '../protocols/Lite';
+
 
 const REMOTE_API = {
   // ColorManager,
@@ -9,7 +25,7 @@ const REMOTE_API = {
   // KeyValuePairStore,
   // MouseHandler,
   // ProgressUpdate,
-  // ProxyManager,
+  ProxyManager,
   // SaveData,
   // TimeHandler,
   // ViewPort,
@@ -17,8 +33,8 @@ const REMOTE_API = {
   // ViewPortImageDelivery,
   // VtkGeometryDelivery,
   // VtkImageDelivery,
-  // // custom
-  // Lite,
+  // custom
+  Lite,
 };
 
 @Injectable({
@@ -143,6 +159,19 @@ export class VtkService {
 
   getFileListing() {
     return this.remote.FileListing;
+  }
+
+  getProxyManager() {
+    return this.remote.ProxyManager;
+  }
+
+  // TODO: consider removing getProxyManager and getFileListing
+  getRemote() {
+    return this.remote;
+  }
+
+  getImageStream() {
+    return this.imageStream;
   }
 
 }
