@@ -99,6 +99,27 @@ export class SidebarComponent implements OnInit {
     this.updateFileElementQuery();
   }
 
+  getProxyName(id: string){
+    let remote = this.vtkService.getRemote();
+    remote.Lite.getProxyName(id)
+    .then((info) => {
+      // console.log('proxyName ready ', info);
+      this.store.dispatch(VTKActions.proxyNameSet({ id: info.id, info: info }));
+    })
+    .catch(console.error);
+  }
+
+  getProxyDataMap(id: string){
+    const needUI : boolean = true;
+    let proxyManager = this.vtkService.getProxyManager();
+    proxyManager.get(id, needUI)
+    .then((proxy) => {
+      // console.log('datamap ', proxy);
+      this.store.dispatch(VTKActions.proxyDataMapSet({ id: proxy.id, info: proxy }));
+    })
+    .catch(console.error);
+  }
+
   selectElement(element: FileElement) {
     console.log('selectElement ', element);
     // this.updateFileElementQuery();
@@ -106,25 +127,55 @@ export class SidebarComponent implements OnInit {
     proxyManager.open(element.name)
       .then((readerProxy) => {
         console.log('proxyManager ready ', readerProxy ) ;
-        let remote = this.vtkService.getRemote();
-        remote.Lite.getProxyName(readerProxy.id)
-        .then((info) => {
-          console.log('proxyName ready ', info);
-          this.store.dispatch(VTKActions.proxyNameSet(info));
-        })
-        .catch(console.error);
+        this.getProxyName(readerProxy.id);
         proxyManager.list()
           .then(({ sources, view }) => {
             console.log('proxyManager list sources ', sources);
             console.log('proxyManager list view ', view);
             this.store.dispatch(VTKActions.proxyPipeLineSet(sources));
-            //TODO only once
-            const needUI = true;
-            proxyManager.get(view, needUI)
-            .then((proxy) => {
-              console.log('proxyManager get ', proxy);
-            })
-            .catch(console.error);
+            this.store.dispatch(VTKActions.viewIdSet(view));
+            const state: AppState = this.store.getState() as AppState;
+            // Fetch view data if first time
+            if (!state.proxyDataMap[view]) {
+              this.getProxyDataMap(view);
+            }
+
+            sources.forEach((proxy) => {
+              console.log('PVL_PROXY_SOURCE_TO_REPRESENTATION_SET', proxy);
+              this.store.dispatch(VTKActions.proxySourceToRepSet({ id: proxy.id, rep: proxy.rep }));
+
+              //Fetch proxy data if not available
+              if (!state.proxyDataMap[proxy.id]) {
+                this.getProxyDataMap(proxy.id);
+              }
+
+              // Fetch proxy name if not available
+              if (!state.proxyNames[proxy.id]) {
+                this.getProxyName(proxy.id);
+                // this.store.dispatch(VTKActions.proxyNameSet({ id: proxy.id, info: proxy }));
+              }
+
+              // Fetch representation data if not available
+              if (!state.proxyDataMap[proxy.rep]) {
+                this.getProxyDataMap(proxy.rep);
+              }
+
+              // Fetch representation name if not available
+              if (!state.proxyNames[proxy.rep]) {
+                this.getProxyName(proxy.rep);
+                // this.store.dispatch(VTKActions.proxyNameSet({ id: proxy.rep, info: proxy }));
+              }
+            });
+
+            // If only one source trigger a reset camera
+            // if (sources.length === 1) {
+            //   dispatch('PVL_VIEW_RESET_CAMERA');
+            // }
+
+            // Fetch new time values
+            // dispatch('PVL_TIME_FETCH_VALUES');
+
+
           })
           .catch(console.error);
       })
