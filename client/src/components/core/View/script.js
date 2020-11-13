@@ -88,6 +88,7 @@ vtkCacheMousePosition.newInstance = macro.newInstance(
 export default {
   name: 'View3D',
   mounted() {
+    console.log('core->view->mounted');
     const container = this.$el.querySelector('.js-renderer');
 
     this.view = vtkViewProxy.newInstance();
@@ -207,6 +208,7 @@ export default {
       this.client.imageStream.setServerAnimationFPS(this.maxFPS);
     },
     viewId() {
+      console.log('core->view->watch viewId!!!!!!!');
       if (this.viewStream) {
         if (this.viewStream.setViewId(this.viewId)) {
           this.fetchCamera();

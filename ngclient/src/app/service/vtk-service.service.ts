@@ -10,7 +10,7 @@ import FileListing from '../protocols/FileListing';
 import ProxyManager from '../protocols/ProxyManager';
 //import SaveData from '../protocols/SaveData';
 //import TimeHandler from '../protocols/TimeHandler';
-//import ViewPort from '../protocols/ViewPort';
+import ViewPort from '../protocols/ViewPort';
 //import ViewPortGeometryDelivery from '../protocols/ViewPortGeometryDelivery';
 //import ViewPortImageDelivery from '../protocols/ViewPortImageDelivery';
 //import VtkGeometryDelivery from '../protocols/VtkGeometryDelivery';
@@ -28,7 +28,7 @@ const REMOTE_API = {
   ProxyManager,
   // SaveData,
   // TimeHandler,
-  // ViewPort,
+  ViewPort,
   // ViewPortGeometryDelivery,
   // ViewPortImageDelivery,
   // VtkGeometryDelivery,
@@ -104,7 +104,7 @@ export class VtkService {
   connect() {
     let config = {
       application: 'evoker',
-      sessionURL: 'ws://localhost:8082/ws'
+      sessionURL: 'ws://localhost:8083/ws'
     }
     console.log('Evoker', JSON.stringify({ config }), '\n');
     if (this.connection) {
@@ -115,6 +115,7 @@ export class VtkService {
       this.smartConnect.onConnectionReady((connection) => {
         console.log('onConnectionReady');
         this.connection = connection;
+        console.log('service create ImageStream');
         this.imageStream = vtkImageStream.newInstance();
         this.remote = {};
         const session = connection.getSession();

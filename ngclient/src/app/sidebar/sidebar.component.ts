@@ -28,14 +28,14 @@ export class SidebarComponent implements OnInit {
     ,@Inject(AppStore) private store: Store<AppState>
     ) {
     // TODO: do we need to subscribe here?
-    store.subscribe(() => this.readState());
-    this.readState();
+    // store.subscribe(() => this.readState());
+    // this.readState();
   }
 
-  readState() {
-    const state: AppState = this.store.getState() as AppState;
-    console.log('readState ', state);
-  }
+  // readState() {
+  //   const state: AppState = this.store.getState() as AppState;
+  //   console.log('readState ', state);
+  // }
 
   ngOnInit(): void {
     this.connect();
@@ -45,21 +45,18 @@ export class SidebarComponent implements OnInit {
     this.vtkService.connect()
       .then((validClient) => {
         console.log('connected');
+        this.store.dispatch(VTKActions.connectionSet(true));
         let fileListing = this.vtkService.getFileListing();
-        // console.log('connect1 currentRoot ', this.currentRoot);
-        // console.log('connect2 currentPath ', this.currentPath);
-
+        //console.log('connect currentRoot: ', this.currentRoot, '; currentPath: ', this.currentPath);
         fileListing.listServerDirectory('.')
           .then((listing) => {
             const { dirs, files, groups, path } = listing;
-            // console.log('dirs ', dirs);
-            // console.log('files ', files);
             dirs.forEach(element => {
-              console.log(element);
+              // console.log(element);
               this.fileService.add({ isFolder: true, name: element, parent: this.currentRoot ? this.currentRoot.id : 'root' });
             });
             files.forEach(element => {
-              console.log(element);
+              // console.log(element);
               this.fileService.add({ isFolder: false, name: element.label, parent: this.currentRoot ? this.currentRoot.id : 'root' });
             });
             this.updateFileElementQuery();
@@ -83,18 +80,18 @@ export class SidebarComponent implements OnInit {
   // }
 
   updateFileElementQuery() {
-    console.log('updateFileElementQuery');
+    // console.log('updateFileElementQuery');
     this.fileElements = this.fileService.queryInFolder(this.currentRoot ? this.currentRoot.id : 'root');
   }
 
   addFolder(folder: { name: string }) {
-    console.log('addFolder');
+    // console.log('addFolder');
     this.fileService.add({ isFolder: true, name: folder.name, parent: this.currentRoot ? this.currentRoot.id : 'root' });
     this.updateFileElementQuery();
   }
 
   removeElement(element: FileElement) {
-    console.log('removeElement');
+    // console.log('removeElement');
     this.fileService.delete(element.id);
     this.updateFileElementQuery();
   }
@@ -124,14 +121,18 @@ export class SidebarComponent implements OnInit {
     console.log('selectElement ', element);
     // this.updateFileElementQuery();
     let proxyManager = this.vtkService.getProxyManager();
-    proxyManager.open(element.name)
+    proxyManager.open(element.name)//line 45 Files\script.js
       .then((readerProxy) => {
-        console.log('proxyManager ready ', readerProxy ) ;
+        // console.log('proxyManager ready ', readerProxy ) ;
+
+        //->this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);//line 47 Files\script.js
         this.getProxyName(readerProxy.id);
+        //<-this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
+
+        //->this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');//line 48 Files\script.js
         proxyManager.list()
           .then(({ sources, view }) => {
-            console.log('proxyManager list sources ', sources);
-            console.log('proxyManager list view ', view);
+            // console.log('proxyManager list sources ', sources, 'view ', view);
             this.store.dispatch(VTKActions.proxyPipeLineSet(sources));
             this.store.dispatch(VTKActions.viewIdSet(view));
             const state: AppState = this.store.getState() as AppState;
@@ -141,7 +142,7 @@ export class SidebarComponent implements OnInit {
             }
 
             sources.forEach((proxy) => {
-              console.log('PVL_PROXY_SOURCE_TO_REPRESENTATION_SET', proxy);
+              // console.log('PVL_PROXY_SOURCE_TO_REPRESENTATION_SET', proxy);
               this.store.dispatch(VTKActions.proxySourceToRepSet({ id: proxy.id, rep: proxy.rep }));
 
               //Fetch proxy data if not available
@@ -152,7 +153,6 @@ export class SidebarComponent implements OnInit {
               // Fetch proxy name if not available
               if (!state.proxyNames[proxy.id]) {
                 this.getProxyName(proxy.id);
-                // this.store.dispatch(VTKActions.proxyNameSet({ id: proxy.id, info: proxy }));
               }
 
               // Fetch representation data if not available
@@ -163,21 +163,65 @@ export class SidebarComponent implements OnInit {
               // Fetch representation name if not available
               if (!state.proxyNames[proxy.rep]) {
                 this.getProxyName(proxy.rep);
-                // this.store.dispatch(VTKActions.proxyNameSet({ id: proxy.rep, info: proxy }));
               }
             });
 
+            // TODO: reset camera is not completed
             // If only one source trigger a reset camera
-            // if (sources.length === 1) {
-            //   dispatch('PVL_VIEW_RESET_CAMERA');
-            // }
+            if (sources.length === 1) {
+              console.log('reset camera');
+              let remote = this.vtkService.getRemote();
+              remote.ViewPort.resetCamera(view).catch(console.error);
+              //TODO: add update camera
+              //dispatch('PVL_VIEW_UPDATE_CAMERA', id);
+            //   if (state.viewProxy) {
+            //     remote.Lite.getCamera(view)
+            //       .then(
+            //         ({ focalPoint, viewUp, position, centerOfRotation, bounds }) => {
+            //           // Update bounds in local vtk.js renderer
+            //           source
+            //             .getPoints()
+            //             .setData(
+            //               Float64Array.from([
+            //                 bounds[0],
+            //                 bounds[2],
+            //                 bounds[4],
+            //                 bounds[1],
+            //                 bounds[3],
+            //                 bounds[5],
+            //               ]),
+            //               3
+            //             );
 
-            // Fetch new time values
+            //           updateCamera(state.viewProxy, {
+            //             centerOfRotation,
+            //             focalPoint,
+            //             position,
+            //             viewUp,
+            //           });
+            //         }
+            //       )
+            //       .catch(console.error);
+            //   }
+            }
+
+
+            // Fetch new time values(I don't think we need these time values)
             // dispatch('PVL_TIME_FETCH_VALUES');
-
-
           })
           .catch(console.error);
+          //<-this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');//line 48 Files\script.js
+
+        //->this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');//line 49 Files\script.js
+        // TODO?: not done so far(needed?)
+        //<-this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');//line 49 Files\script.js
+
+        //->this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);;//line 50 Files\script.js
+        // TODO?: not done so far(needed?)
+        this.store.dispatch(VTKActions.proxySelectedIdsSet([readerProxy.id]));
+        //<-this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);;//line 50 Files\script.js
+
+
       })
       .catch(console.error);
 

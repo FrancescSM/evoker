@@ -1,12 +1,21 @@
 
 export interface AppState {
-  pipeline: [] // pipeline list
+  connected: boolean
+  , selectedSources: string[]
+  , pipeline: {
+    name: string;
+    id: string;
+    rep: string;
+    visible: boolean;
+    parent: string;
+  }[] // pipeline list
   , sourceToRepresentationMap: {
     [id:string] : string
   } // id(string) => id(string)
   , proxyDataMap: {} // id(string) => { data, properties, ui, id }
   , proxyNames: {} // id(string) => { group(str), name(str), label(str) }
   , viewId: string
+  , viewProxy: null
 };
 
 // state: {

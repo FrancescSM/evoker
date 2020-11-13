@@ -84,6 +84,7 @@ export default {
   },
   mutations: {
     PVL_VIEW_PVL_PROXY_SET(state, viewProxy) {
+      console.log('PVL_VIEW_PVL_PROXY_SET ', viewProxy);
       if (state.viewProxy !== viewProxy) {
         state.viewProxy = viewProxy;
         state.viewProxy.getRenderer().addActor(actor);
