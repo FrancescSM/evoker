@@ -2,37 +2,37 @@ import { Injectable } from '@angular/core';
 import SmartConnect from 'wslink/src/SmartConnect';
 import vtkImageStream from 'vtk.js/Sources/IO/Core/ImageStream';
 
-//import ColorManager from '../protocols/ColorManager';
+import ColorManager from '../protocols/ColorManager';
 import FileListing from '../protocols/FileListing';
-//import KeyValuePairStore from '../protocols/KeyValuePairStore';
-//import MouseHandler from '../protocols/MouseHandler';
-//import ProgressUpdate from '../protocols/ProgressUpdate';
+import KeyValuePairStore from '../protocols/KeyValuePairStore';
+import MouseHandler from '../protocols/MouseHandler';
+import ProgressUpdate from '../protocols/ProgressUpdate';
 import ProxyManager from '../protocols/ProxyManager';
-//import SaveData from '../protocols/SaveData';
-//import TimeHandler from '../protocols/TimeHandler';
+import SaveData from '../protocols/SaveData';
+import TimeHandler from '../protocols/TimeHandler';
 import ViewPort from '../protocols/ViewPort';
-//import ViewPortGeometryDelivery from '../protocols/ViewPortGeometryDelivery';
-//import ViewPortImageDelivery from '../protocols/ViewPortImageDelivery';
-//import VtkGeometryDelivery from '../protocols/VtkGeometryDelivery';
-//import VtkImageDelivery from '../protocols/VtkImageDelivery';
+import ViewPortGeometryDelivery from '../protocols/ViewPortGeometryDelivery';
+import ViewPortImageDelivery from '../protocols/ViewPortImageDelivery';
+import VtkGeometryDelivery from '../protocols/VtkGeometryDelivery';
+import VtkImageDelivery from '../protocols/VtkImageDelivery';
 
 import Lite from '../protocols/Lite';
 
 
 const REMOTE_API = {
-  // ColorManager,
+  ColorManager,
   FileListing,
-  // KeyValuePairStore,
-  // MouseHandler,
-  // ProgressUpdate,
+  KeyValuePairStore,
+  MouseHandler,
+  ProgressUpdate,
   ProxyManager,
-  // SaveData,
-  // TimeHandler,
+  SaveData,
+  TimeHandler,
   ViewPort,
-  // ViewPortGeometryDelivery,
-  // ViewPortImageDelivery,
-  // VtkGeometryDelivery,
-  // VtkImageDelivery,
+  ViewPortGeometryDelivery,
+  ViewPortImageDelivery,
+  VtkGeometryDelivery,
+  VtkImageDelivery,
   // custom
   Lite,
 };
@@ -51,24 +51,27 @@ export class VtkService {
   private remote: any = null;
   private updateBusy: any;
   private busyCount: number = 0;
+  private timeoutId: any = 0;
+  private busyCallback: any = null;
+  private notifyBusy: any = null;
 
   constructor() {
     this.updateBusy = (delta = 0) => {
       this.busyCount += delta;
-      //   if (this.busyCallback) {
-      //     if (this.timeoutId) {
-      //       clearTimeout(this.timeoutId);
-      //       this.timeoutId = 0;
-      //     }
-      //     if (!this.busyCount) {
-      //       // Try to delay the notification of idle
-      //       this.timeoutId = setTimeout(() => {
-      //         this.notifyBusy();
-      //       }, 50);
-      //     } else {
-      //       this.notifyBusy();
-      //     }
-      //   }
+        if (this.busyCallback) {
+          if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = 0;
+          }
+          if (!this.busyCount) {
+            // Try to delay the notification of idle
+            this.timeoutId = setTimeout(() => {
+              this.notifyBusy();
+            }, 50);
+          } else {
+            this.notifyBusy();
+          }
+        }
     };
   }
 

@@ -14,9 +14,19 @@ const initialState: AppState = {
   , proxyNames:{}
   , sourceToRepresentationMap: {} // id(string) => id(string)
   , pipeline: []
-  , viewId: ""
+  , view: ""
+  , stats: false
+  , stillQuality: 100
+  , interactiveQuality: 80
+  , stillRatio: 1
+  , interactiveRatio: 1
+  , maxFPS: 30
+  , mouseThrottle: 16.6
+  , camera: null
   , viewProxy: null
+  , inAnimation: false
 };
+
 
 // Create our reducer that will handle changes to the state
 export const vtkReducer: Reducer<AppState> =
@@ -36,7 +46,7 @@ export const vtkReducer: Reducer<AppState> =
 
 
     case VTKActions.VIEW_ID_SET:
-      newState.viewId = (<VTKActions.ViewIdSetAction>action).view;
+      newState.view = (<VTKActions.ViewIdSetAction>action).view;
       return Object.assign({}, state, newState);
 
     case VTKActions.PROXY_SOURCE_TO_REP_SET:

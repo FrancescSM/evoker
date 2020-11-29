@@ -13,6 +13,7 @@ actor.setMapper(mapper);
 mapper.setInputData(source);
 
 function updateCamera(viewProxy, cameraInfo) {
+  console.log('updateCamera');
   if (!viewProxy) {
     return;
   }
@@ -112,6 +113,7 @@ export default {
       state.maxFPS = value;
     },
     PVL_VIEW_MOUSE_THROTTLE_SET(state, value) {
+      console.log('view mouse throttle set ', value);
       state.mouseThrottle = value;
     },
   },
@@ -199,6 +201,7 @@ export default {
       { state, dispatch },
       { axis, orientation, viewUp }
     ) {
+      console.log('update orientation');
       if (state.viewProxy && !state.inAnimation) {
         state.inAnimation = true;
         state.viewProxy
@@ -215,6 +218,7 @@ export default {
       }
     },
     PVL_VIEW_RENDER({ getters, state }, id) {
+      console.log('view render');
       const client = getters.PVL_NETWORK_CLIENT;
       const viewId = id || state.view;
       if (client) {

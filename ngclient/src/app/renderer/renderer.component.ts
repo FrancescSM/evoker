@@ -13,10 +13,13 @@ import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
 import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
 import vtkPolyData from 'vtk.js/Sources/Common/DataModel/PolyData';
 
+
 import { Store } from 'redux';
 import { AppStore } from '../app.store'
 import { AppState } from '../app.state'
 import * as VTKActions from '../app.actions';
+
+const PVL_VIEW_UPS = [[0, 1, 0], [0, 0, 1], [0, 1, 0]];
 
 // ----------------------------------------------------------------------------
 // Component API
@@ -114,6 +117,8 @@ export class RendererComponent implements OnInit {
   private mapper: vtkMapper = null;
   private source: vtkPolyData = null;
   private viewId: string = '';
+  private orientationTooltip: string = '';
+  private tooltipStyle: any = { top: 0, left: 0 };
 
   constructor(
     private vtkService: VtkService
@@ -143,6 +148,11 @@ export class RendererComponent implements OnInit {
   }
 
   updateCamera({ position, focalPoint, viewUp, centerOfRotation }) {
+    console.log('updateCamera');
+    console.log('position ', position);
+    console.log('focalPoint ', focalPoint);
+    console.log('viewUp ', viewUp);
+    console.log('centerOfRotation ', centerOfRotation);
     const camera = this.view.getCamera();
     if (position) {
       camera.setPosition(...position);
@@ -172,20 +182,21 @@ export class RendererComponent implements OnInit {
 
   readState(): void {
     const state: AppState = this.store.getState() as AppState;
-    console.log('renderer readState ', state.viewId , ' ', state.connected);
+    console.log('renderer readState ', state.view , ' ', state.connected);
     if (this.connected != state.connected){
       this.connected = state.connected;
       // console.log('renderer readState connection change');
       if (this.connected){
-        // console.log('renderer readState connect!!!');
-        this.createRender();
+        //console.log('renderer readState connect!!!');
+        this.createRender(state);
       }
     }
-    if (this.viewId != state.viewId){
+    //if (this.viewId != state.viewId){
       console.log('renderer readState viewid change');
-      this.viewId = state.viewId;
+      this.viewId = state.view;
       if (this.viewStream) {
         if (this.viewStream.setViewId(this.viewId)) {
+          console.log('inside setViewId!!!!');
           //TODO
           //this.fetchCamera();
           const currentSize = this.view.getOpenglRenderWindow().getSize();
@@ -194,18 +205,40 @@ export class RendererComponent implements OnInit {
             .then(this.viewStream.render);
         }
       }
-    }
+      //}
+
   }
 
-  createRender(): void {
+  // updateOrientation({ axis, orientation, viewUp }){
+  //   console.log('update orientation');
+  //   const state: AppState = this.store.getState() as AppState;
+  //   if (state.viewProxy && !state.inAnimation) {
+  //     state.inAnimation = true;
+  //     if (state.viewProxy != null){
+  //       state.viewProxy
+  //         .updateOrientation(
+  //           axis,
+  //           orientation,
+  //           viewUp || PVL_VIEW_UPS[axis],
+  //           100
+  //         )
+  //         .then(() => {
+  //           state.inAnimation = false;
+  //           dispatch('PVL_VIEW_RESET_CAMERA');
+  //         });
+  //     }
+  //   }
+  // }
+
+  createRender(state: AppState): void {
     console.log('createRender');
     const container = document.getElementById('container-id');
+
     this.view = vtkViewProxy.newInstance();
     this.view.setContainer(container);
     this.view.resize();
 
     // Create and link viewStream
-    console.log('component before getImageStream');
     let imageStream = this.vtkService.getImageStream();
     this.viewStream = imageStream.createViewStream('-1');
     this.view.getOpenglRenderWindow().setViewStream(this.viewStream);
@@ -235,38 +268,41 @@ export class RendererComponent implements OnInit {
     this.widget.setBounds(bounds);
     this.widget.setPlaceFactor(1);
     this.widget.getWidgetState().onModified(() => {
+      console.log('onModified1');
       const state = this.widget.getWidgetState();
       if (!state.getActive()) {
-        //this.orientationTooltip = '';
+        this.orientationTooltip = '';
         return;
       }
+      console.log('onModified2');
       const direction = state.getDirection();
       const { axis, orientation, viewUp } = computeOrientation(
         direction,
         this.camera.getViewUp()
       );
-      // this.orientationTooltip = `Reset camera ${orientation > 0 ? '+' : '-'}${
-      //   'XYZ'[axis]
-      // }/${vectorToLabel(viewUp)}`;
-      // this.tooltipStyle = toStyle(
-      //   this.mousePositionCache.getPosition(),
-      //   this.view.getOpenglRenderWindow().getSize()[1]
-      // );
+      console.log('onModified3');
+      this.orientationTooltip = `Reset camera ${orientation > 0 ? '+' : '-'}${
+         'XYZ'[axis]
+      }/${vectorToLabel(viewUp)}`;
+      this.tooltipStyle = toStyle(
+         this.mousePositionCache.getPosition(),
+         this.view.getOpenglRenderWindow().getSize()[1]
+      );
     });
 
     // Manage user interaction
     this.viewWidget = this.widgetManager.addWidget(this.widget);
     this.viewWidget.onOrientationChange(({ direction }) => {
-      console.log('orientation change');
+      console.log('orientation change TODO');
       // this.updateOrientation(
-      //   computeOrientation(direction, this.camera.getViewUp())
+      //    computeOrientation(direction, this.camera.getViewUp())
       // );
     });
 
     // Initial config
     this.updateQuality();
     this.updateRatio();
-    //this.client.imageStream.setServerAnimationFPS(this.maxFPS);
+    imageStream.setServerAnimationFPS(state.maxFPS);
 
     // Expose viewProxy to store (for camera update...)
     //this.$store.commit('PVL_VIEW_PVL_PROXY_SET', this.view);
@@ -283,6 +319,7 @@ export class RendererComponent implements OnInit {
     // Link server side camera to local
     let remote = this.vtkService.getRemote();
     remote.Lite.getCamera('-1').then((cameraInfo) => {
+      console.log('updateCamera in view!!!');
       this.updateCamera(cameraInfo);
       this.viewStream.pushCamera();
     });
@@ -293,22 +330,4 @@ export class RendererComponent implements OnInit {
 
 }
 
-// PVL_VIEW_UPDATE_ORIENTATION(
-//   { state, dispatch },
-//   { axis, orientation, viewUp }
-// ) {
-//   if (state.viewProxy && !state.inAnimation) {
-//     state.inAnimation = true;
-//     state.viewProxy
-//       .updateOrientation(
-//         axis,
-//         orientation,
-//         viewUp || PVL_VIEW_UPS[axis],
-//         100
-//       )
-//       .then(() => {
-//         state.inAnimation = false;
-//         dispatch('PVL_VIEW_RESET_CAMERA');
-//       });
-//   }
-// },
+
