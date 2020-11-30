@@ -1,0 +1,48 @@
+<v-container :class="$style.container" fluid fill-height v-resize="onResize">
+  <v-container :class="$style.floatToolbar" fluid >
+    <v-layout column >
+      <v-tooltip left>
+        <span :class="$style.noSelect">Reset camera</span>
+        <v-btn
+          slot="activator"
+          icon
+          dark
+          small
+          v-on:click="resetCamera()"
+        >
+          <v-icon>{{ $vuetify.icons.pvLite.resetCamera }}</v-icon>
+        </v-btn>
+      </v-tooltip>
+      <v-tooltip left>
+        <span :class="$style.noSelect">Rotate camera left 90°</span>
+        <v-btn
+          slot="activator"
+          icon
+          dark
+          small
+          v-on:click="rollLeft()"
+        >
+          <v-icon>{{ $vuetify.icons.pvLite.rotateLeft }}</v-icon>
+        </v-btn>
+      </v-tooltip>
+      <v-tooltip left>
+        <span :class="$style.noSelect">Rotate camera right 90°</span>
+        <v-btn
+          slot="activator"
+          icon
+          dark
+          small
+          v-on:click="rollRight()"
+        >
+          <v-icon>{{ $vuetify.icons.pvLite.rotateRight }}</v-icon>
+        </v-btn>
+      </v-tooltip>
+    </v-layout>
+  </v-container>
+  <div
+    :class="$style.tootip"
+    :style="tooltipStyle"
+    v-show="orientationTooltip"
+  >{{ orientationTooltip }}</div>
+  <div :class="[$style.renderer, 'js-renderer']" />
+</v-container>
