@@ -1,5 +1,5 @@
-import Sources from 'paraview-lite/src/modules/Sources';
-import sourcesModule from 'paraview-lite/src/modules/Sources/module';
+// import Sources from 'paraview-lite/src/modules/Sources';
+// import sourcesModule from 'paraview-lite/src/modules/Sources/module';
 
 import Files from 'paraview-lite/src/modules/Files';
 import filesModule from 'paraview-lite/src/modules/Files/module';
@@ -33,10 +33,10 @@ export default function registerModules(store) {
   // Widget registering
   // --------------------------------------------------------------------------
 
-  store.commit(
-    'PVL_MODULES_ADD',
-    Object.assign({}, sourcesModule, { component: Sources })
-  );
+  // store.commit(
+  //   'PVL_MODULES_ADD',
+  //   Object.assign({}, sourcesModule, { component: Sources })
+  // );
   store.commit(
     'PVL_MODULES_ADD',
     Object.assign({}, filesModule, { component: Files })

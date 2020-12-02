@@ -1,6 +1,6 @@
 <v-toolbar dense :class="$style.container">
   <v-layout row v-if="activeProxyData">
-    <collapsable-item :icon="$vuetify.icons.pvLite.representationType" small>
+    <!-- <collapsable-item :icon="$vuetify.icons.pvLite.representationType" small> -->
     <v-combobox
       :class="$style.comboboxFirst"
       dense
@@ -12,7 +12,7 @@
       :items="representationItems"
       label="Representation"
     />
-    </collapsable-item>
+    <!-- </collapsable-item>
     <collapsable-item :icon="$vuetify.icons.pvLite.representationColor">
       <v-layout row fill-height align-center>
         <v-combobox
@@ -38,6 +38,14 @@
         />
       </v-layout>
     </collapsable-item>
+
+    <palette-picker
+    v-if="colorValue === SOLID_COLOR_ITEM"
+    :palette="['#ffffff', '#cccccc', '#aaaaaa', '#777777', '#333333']"
+    :value="diffuseColor"
+    @input="updateColor"
+    />
+
     <lookup-table-toolbar :lookupTable="lookupTable"/>
 
     <v-spacer />
@@ -52,15 +60,7 @@
       :max="timeValues.length - 1"
       step="1"
       :messages="[timeValues[timeIndex]]"
-    ><!--
-      <template
-        slot="thumb-label"
-        slot-scope="props"
-      >
-        <span style="z-index: 200;">
-            {{ timeValues[props.value] }}
-        </span>
-      </template> -->
+    >
     </v-slider>
     <label :class="$style.timeLabel" :title="timeValues[timeIndex]">
       {{ timeValues[timeIndex] }}
@@ -100,6 +100,7 @@
       max="10"
     ></v-text-field>
     </collapsable-item>
+  -->
   </v-layout>
   <div v-if="!activeProxyData" :class="$style.empty"></div>
 </v-toolbar>

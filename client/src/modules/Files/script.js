@@ -38,10 +38,11 @@ export default {
         .catch(console.error);
       },
       openFiles(files) {
-        console.log('openfiles ', files);
         const pathPrefix = this.path.slice(1).join('/');
         const relativePathFiles =
         this.path.length > 1 ? files.map((f) => `${pathPrefix}/${f}`) : files;
+        console.log('openfiles ', files, 'relative ', relativePathFiles);
+        //TODO: check if file is for meshing
         this.client.remote.ProxyManager.open(relativePathFiles)
         .then((readerProxy) => {
           this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);

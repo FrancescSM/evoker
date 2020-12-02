@@ -99,9 +99,15 @@ export default generateComponentWithServerBinding(
         },
         representationItems() {
           if (this.activeProxyData) {
-            return this.activeProxyData.ui.find(
-              (prop) => prop.name === 'Representation'
-            ).values;
+            return this.activeProxyData.ui
+              .find((prop) => prop.name === 'Representation')
+              .values.filter(
+                (value) =>
+                  value === 'Surface' ||
+                  value === 'Surface With Edges' ||
+                  value === 'Points' ||
+                  value === 'Wireframe'
+              );
           }
           return [];
         },
