@@ -4,11 +4,14 @@
 import Files from 'paraview-lite/src/modules/Files';
 import filesModule from 'paraview-lite/src/modules/Files/module';
 
-import Sphere from 'paraview-lite/src/modules/Sphere';
-import sphereModule from 'paraview-lite/src/modules/Sphere/module';
+import Mesh from 'paraview-lite/src/modules/Mesh';
+import meshModule from 'paraview-lite/src/modules/Mesh/module';
 
-import Cone from 'paraview-lite/src/modules/Cone';
-import coneModule from 'paraview-lite/src/modules/Cone/module';
+// import Sphere from 'paraview-lite/src/modules/Sphere';
+// import sphereModule from 'paraview-lite/src/modules/Sphere/module';
+
+// import Cone from 'paraview-lite/src/modules/Cone';
+// import coneModule from 'paraview-lite/src/modules/Cone/module';
 
 import Clip from 'paraview-lite/src/modules/Clip';
 import clipModule from 'paraview-lite/src/modules/Clip/module';
@@ -43,12 +46,16 @@ export default function registerModules(store) {
   );
   store.commit(
     'PVL_MODULES_ADD',
-    Object.assign({}, sphereModule, { component: Sphere })
+    Object.assign({}, meshModule, { component: Mesh })
   );
-  store.commit(
-    'PVL_MODULES_ADD',
-    Object.assign({}, coneModule, { component: Cone })
-  );
+  // store.commit(
+  //   'PVL_MODULES_ADD',
+  //   Object.assign({}, sphereModule, { component: Sphere })
+  // );
+  // store.commit(
+  //   'PVL_MODULES_ADD',
+  //   Object.assign({}, coneModule, { component: Cone })
+  // );
   store.commit(
     'PVL_MODULES_ADD',
     Object.assign({}, clipModule, { component: Clip })

@@ -14,5 +14,7 @@ export default function createMethods(session) {
       session.call('paraview.lite.lut.set.preset', [arrayName, presetName]),
     updateLineContext: (visible = false, p1 = [0, 0, 0], p2 = [1, 1, 1]) =>
       session.call('paraview.lite.context.line.set', [visible, p1, p2]),
+    nextFibonacci: (value) =>
+      session.call('paraview.lite.fibonacci.next', [value]),
   };
 }

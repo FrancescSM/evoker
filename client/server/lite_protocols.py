@@ -71,6 +71,14 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         'centerOfRotation': tuple(view.CenterOfRotation),
       }
 
+    @exportRpc("paraview.lite.fibonacci.next")
+    def nextFibonacci(self, value):
+      # fibos = [1,2,3,5,8,13,21,34,55,89]
+      print('fibo next ', value)
+      return {
+        'value': 5
+      }
+
     @exportRpc("paraview.lite.lut.get")
     def getLookupTableForArrayName(self, name, numSamples = 255):
       lutProxy = simple.GetColorTransferFunction(name)
