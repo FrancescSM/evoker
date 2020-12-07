@@ -233,5 +233,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     _Server.configure(args)
 
+    # print('args ', args)
+    # print('server ', _Server.dataDir)
+
     # Start server
     server.start_webserver(options=args, protocol=_Server)

@@ -9,6 +9,8 @@ from vtkmodules.vtkCommonCore import vtkUnsignedCharArray, vtkCollection
 from vtkmodules.vtkCommonDataModel import vtkImageData
 from vtkmodules.vtkWebCore import vtkDataEncoder
 
+from distutils.dir_util import copy_tree
+
 try:
     # PV 5.6
     from vtkmodules.vtkPVClientServerCoreRendering import vtkPVRenderView
@@ -31,6 +33,9 @@ try:
     from paraview.servermanager import vtkSMTransferFunctionProxy
 except:
     pass
+
+#TODO: change it in deployment
+home = 'C:/projects_web/3d_samples/'
 
 class ParaViewLite(pv_protocols.ParaViewWebProtocol):
     def __init__(self, **kwargs):
@@ -78,6 +83,11 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       return {
         'value': 5
       }
+
+    @exportRpc("paraview.lite.mesh")
+    def mesh(self, path):
+      print('mesh copy from ', home + 'sergi_files2', ' to ', home + path)
+      copy_tree(home+'sergi_files2', home+path)
 
     @exportRpc("paraview.lite.lut.get")
     def getLookupTableForArrayName(self, name, numSamples = 255):

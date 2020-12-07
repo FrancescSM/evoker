@@ -32,7 +32,7 @@ export default {
   mutations: {
     PVL_MODULES_ADD(
       state,
-      { icon, label, component, isSource, showInMenu, priority, name }
+      { icon, label, component, isSource, showInMenu, priority, name, directory }
     ) {
       const module = {};
       module.name = name;
@@ -41,12 +41,14 @@ export default {
       module.icon = icon || DEFAULT_VALUES.icon;
       module.label = label || DEFAULT_VALUES.label;
       module.priority = priority || DEFAULT_VALUES.priority;
+      module.directory = directory || DEFAULT_VALUES.directory;
 
       state.modules.push(module);
       state.modules.sort(moduleSorting);
       state.moduleMap[name] = module;
     },
     PVL_MODULES_ACTIVE_SET(state, module) {
+      console.log('PVL_MODULES_ACTIVE_SET ', module);
       state.active = module;
     },
   },
@@ -55,7 +57,19 @@ export default {
       commit('PVL_MODULES_ACTIVE_SET', null);
     },
     PVL_MODULES_ACTIVE_BY_NAME({ commit, state }, name) {
+      state.moduleMap[name].directory = '.';
       commit('PVL_MODULES_ACTIVE_SET', state.moduleMap[name]);
+    },
+    PVL_MODULES_ACTIVE_BY_NAME_WITH_DIR({ commit, state }, value) {
+      let splitted = value.split(':');
+      console.log(
+        'PVL_MODULES_ACTIVE_BY_NAME_WITH_DIR ',
+        splitted[0],
+        ' ',
+        splitted[1]
+      );
+      state.moduleMap[splitted[0]].directory = splitted[1];
+      commit('PVL_MODULES_ACTIVE_SET', state.moduleMap[splitted[0]]);
     },
   },
 };

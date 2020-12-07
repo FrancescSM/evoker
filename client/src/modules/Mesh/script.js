@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { mapGetters, mapActions } from 'vuex';
 
 import module from './module';
@@ -8,7 +7,7 @@ import module from './module';
 // ----------------------------------------------------------------------------
 
 export default {
-  name: 'Files',
+  name: 'Mesh',
   data() {
     return {
       label: 'Home',
@@ -22,7 +21,6 @@ export default {
   },
   computed: mapGetters({
     client: 'PVL_NETWORK_CLIENT',
-    active: 'PVL_MODULES_ACTIVE',
   }),
   methods: Object.assign(
     {
@@ -39,24 +37,26 @@ export default {
           })
           .catch(console.error);
       },
-      openFiles(files) {
-        const pathPrefix = this.path.slice(1).join('/');
-        const relativePathFiles =
-          this.path.length > 1 ? files.map((f) => `${pathPrefix}/${f}`) : files;
-        console.log('openfiles ', files, 'relative ', relativePathFiles);
-        //TODO: check if file is for meshing
-        this.client.remote.ProxyManager.open(relativePathFiles)
-          .then((readerProxy) => {
-            this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
-            this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
-            this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
-            this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
-          })
-          .catch(console.error);
-      },
+      // openFiles(files) {
+      //   const pathPrefix = this.path.slice(1).join('/');
+      //   const relativePathFiles =
+      //   this.path.length > 1 ? files.map((f) => `${pathPrefix}/${f}`) : files;
+      //   console.log('openfiles ', files, 'relative ', relativePathFiles);
+      //   //TODO: check if file is for meshing
+      //   this.client.remote.ProxyManager.open(relativePathFiles)
+      //   .then((readerProxy) => {
+      //     this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
+      //     this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
+      //     this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
+      //     this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
+      //   })
+      //   .catch(console.error);
+      // },
       openDirectory(directoryName) {
         console.log('openDirectory ', directoryName);
-        this.listServerDirectory(this.path.concat(directoryName).join('/'));
+        this.client.remote.Lite.mesh(directoryName);
+        let value = 'Files:' + directoryName;
+        this.activate_with_dir(value);
       },
       listParentDirectory(index) {
         console.log('listParentDirectory ', index);
@@ -67,17 +67,12 @@ export default {
         }
       },
     },
-    mapActions({ removeActiveModule: 'PVL_MODULES_ACTIVE_CLEAR' })
+    mapActions({
+      removeActiveModule: 'PVL_MODULES_ACTIVE_CLEAR',
+      activate_with_dir: 'PVL_MODULES_ACTIVE_BY_NAME_WITH_DIR',
+    })
   ),
   mounted() {
-    console.log('mounted files path', this.path);
-    console.log('mounted files ', this.active.directory);
-    this.listServerDirectory(this.active.directory);
-    if (this.active.directory != '.'){
-      console.log('opening directory');
-      this.openDirectory(this.active.directory);
-    }
-    else
-      console.log('not opening directory');
+    this.listServerDirectory('.');
   },
 };
