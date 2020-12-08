@@ -86,6 +86,9 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("paraview.lite.mesh")
     def mesh(self, path):
+      #print('mesh')
+      #print('home ', pv_protocols.ParaViewWebFileListing.Home)
+      #print('home 2', self.Home)
       print('mesh copy from ', home + 'sergi_files2', ' to ', home + path)
       copy_tree(home+'sergi_files2', home+path)
 
