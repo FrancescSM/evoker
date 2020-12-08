@@ -35,7 +35,8 @@ except:
     pass
 
 #TODO: change it in deployment
-home = 'C:/projects_web/3d_samples/'
+#home = 'C:/projects_web/3d_samples/'
+home = '/home/azureuser/3d_samples/'
 
 class ParaViewLite(pv_protocols.ParaViewWebProtocol):
     def __init__(self, **kwargs):
