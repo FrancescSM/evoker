@@ -34,14 +34,11 @@ try:
 except:
     pass
 
-#TODO: change it in deployment
-#home = 'C:/projects_web/3d_samples/'
-home = '/home/azureuser/3d_samples/'
-
 class ParaViewLite(pv_protocols.ParaViewWebProtocol):
-    def __init__(self, **kwargs):
+    def __init__(self, data_dir, **kwargs):
       super(pv_protocols.ParaViewWebProtocol, self).__init__()
       self.lineContext = None
+      self.data_dir = data_dir + '\\'
 
     @exportRpc("paraview.lite.proxy.name")
     def getProxyName(self, pid):
@@ -87,11 +84,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("paraview.lite.mesh")
     def mesh(self, path):
-      #print('mesh')
-      #print('home ', pv_protocols.ParaViewWebFileListing.Home)
-      #print('home 2', self.Home)
-      print('mesh copy from ', home + 'sergi_files2', ' to ', home + path)
-      copy_tree(home+'sergi_files2', home+path)
+      print('mesh copy from ', self.data_dir + 'sergi_files2', ' to ', self.data_dir + path)
+      copy_tree(self.data_dir + 'sergi_files2', self.data_dir + path)
 
     @exportRpc("paraview.lite.lut.get")
     def getLookupTableForArrayName(self, name, numSamples = 255):
