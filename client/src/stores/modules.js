@@ -32,7 +32,16 @@ export default {
   mutations: {
     PVL_MODULES_ADD(
       state,
-      { icon, label, component, isSource, showInMenu, priority, name, directory }
+      {
+        icon,
+        label,
+        component,
+        isSource,
+        showInMenu,
+        priority,
+        name,
+        directory,
+      }
     ) {
       const module = {};
       module.name = name;

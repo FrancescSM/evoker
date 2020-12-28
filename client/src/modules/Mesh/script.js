@@ -1,78 +1,160 @@
-import { mapGetters, mapActions } from 'vuex';
+import {
+  generateComponentWithServerBinding,
+  bool2int,
+  toBoolean,
+} from 'paraview-lite/src/proxyHelper';
 
 import module from './module';
 
-// ----------------------------------------------------------------------------
-// Component
-// ----------------------------------------------------------------------------
-
-export default {
-  name: 'Mesh',
-  data() {
-    return {
-      label: 'Home',
-      directories: [],
-      groups: [],
-      files: [],
-      path: [],
-      module,
-      color: 'grey darken-2',
-    };
+export default generateComponentWithServerBinding(
+  'Clip',
+  'Source',
+  {
+    crinkleclip: {
+      name: 'PreserveInputCells',
+      label: 'Crinkleclip',
+      clientToServer: bool2int,
+      serverToClient: toBoolean,
+      autoApply: false,
+      default: 0,
+    },
+    invert: {
+      name: 'Invert',
+      clientToServer: bool2int,
+      serverToClient: toBoolean,
+      autoApply: false,
+      default: 1,
+    },
+    origin: {
+      name: 'Origin',
+      autoApply: false,
+      default: [0, 0, 0],
+      subProxy: 'ClipType',
+    },
+    normal: {
+      name: 'Normal',
+      autoApply: false,
+      default: [0, 0, 1],
+      subProxy: 'ClipType',
+    },
   },
-  computed: mapGetters({
-    client: 'PVL_NETWORK_CLIENT',
-  }),
-  methods: Object.assign(
-    {
-      listServerDirectory(pathToList) {
-        console.log('listServerDirectory ', pathToList);
-        this.client.remote.FileListing.listServerDirectory(pathToList)
-          .then((listing) => {
-            const { dirs, files, groups, path } = listing;
-            this.files = files;
-            this.groups = groups;
-            this.directories = dirs;
-            this.path = path;
-            this.label = this.path.slice(-1)[0];
-          })
-          .catch(console.error);
+  {
+    name: 'Clip',
+    data() {
+      return {
+        module,
+        color: 'grey darken-2',
+        normalMode: 3,
+      };
+    },
+    mounted() {
+      if (this.create) {
+        // Use input bounds to set initial values
+        const bounds = this.inputBounds;
+        this.origin = [
+          0.5 * (bounds[0] + bounds[1]),
+          0.5 * (bounds[2] + bounds[3]),
+          0.5 * (bounds[4] + bounds[5]),
+        ];
+      }
+    },
+    computed: {
+      xNormal: {
+        get() {
+          // register dependency
+          this.mtime; // eslint-disable-line
+          return this.normal[0];
+        },
+        set(value) {
+          this.mtime++;
+          const newNormal = this.normal.slice();
+          newNormal[0] = value;
+          this.normal = newNormal.map(Number);
+          this.$forceUpdate();
+        },
       },
-      // openFiles(files) {
-      //   const pathPrefix = this.path.slice(1).join('/');
-      //   const relativePathFiles =
-      //   this.path.length > 1 ? files.map((f) => `${pathPrefix}/${f}`) : files;
-      //   console.log('openfiles ', files, 'relative ', relativePathFiles);
-      //   //TODO: check if file is for meshing
-      //   this.client.remote.ProxyManager.open(relativePathFiles)
-      //   .then((readerProxy) => {
-      //     this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
-      //     this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
-      //     this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
-      //     this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
-      //   })
-      //   .catch(console.error);
-      // },
-      openDirectory(directoryName) {
-        console.log('openDirectory ', directoryName);
-        this.client.remote.Lite.mesh(directoryName);
-        let value = 'Files:' + directoryName;
-        this.activate_with_dir(value);
+      yNormal: {
+        get() {
+          // register dependency
+          this.mtime; // eslint-disable-line
+          return this.normal[1];
+        },
+        set(value) {
+          this.mtime++;
+          const newNormal = this.normal.slice();
+          newNormal[1] = value;
+          this.normal = newNormal.map(Number);
+          this.$forceUpdate();
+        },
       },
-      listParentDirectory(index) {
-        console.log('listParentDirectory ', index);
-        if (index) {
-          this.listServerDirectory(this.path.slice(0, index + 1).join('/'));
-        } else {
-          this.listServerDirectory('.');
+      zNormal: {
+        get() {
+          // register dependency
+          this.mtime; // eslint-disable-line
+          return this.normal[2];
+        },
+        set(value) {
+          this.mtime++;
+          const newNormal = this.normal.slice();
+          newNormal[2] = value;
+          this.normal = newNormal.map(Number);
+          this.$forceUpdate();
+        },
+      },
+      xOrigin: {
+        get() {
+          // register dependency
+          this.mtime; // eslint-disable-line
+          return this.origin[0];
+        },
+        set(value) {
+          this.mtime++;
+          const newOrigin = this.origin.slice();
+          newOrigin[0] = value;
+          this.origin = newOrigin.map(Number);
+          this.$forceUpdate();
+        },
+      },
+      yOrigin: {
+        get() {
+          // register dependency
+          this.mtime; // eslint-disable-line
+          return this.origin[1];
+        },
+        set(value) {
+          this.mtime++;
+          const newOrigin = this.origin.slice();
+          newOrigin[1] = value;
+          this.origin = newOrigin.map(Number);
+          this.$forceUpdate();
+        },
+      },
+      zOrigin: {
+        get() {
+          // register dependency
+          this.mtime; // eslint-disable-line
+          return this.origin[2];
+        },
+        set(value) {
+          this.mtime++;
+          const newOrigin = this.origin.slice();
+          newOrigin[2] = value;
+          this.origin = newOrigin;
+          this.$forceUpdate();
+        },
+      },
+    },
+    watch: {
+      normalMode() {
+        // register dependency
+        this.mtime; // eslint-disable-line
+        const newNormal = [0, 0, 0];
+        newNormal[this.normalMode] = 1;
+        if (this.normalMode < 3) {
+          this.normal = newNormal.map(Number);
+          this.$forceUpdate();
         }
       },
     },
-    mapActions({
-      removeActiveModule: 'PVL_MODULES_ACTIVE_CLEAR',
-      activate_with_dir: 'PVL_MODULES_ACTIVE_BY_NAME_WITH_DIR',
-    })
-  ),
-  mounted() {
-    this.listServerDirectory('.');
-  },
-};
+  }
+);

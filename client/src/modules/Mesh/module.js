@@ -2,8 +2,7 @@ export default {
   name: 'Mesh',
   icon: 'mdi-view-dashboard',
   label: 'Mesh',
-  priority: 100,
-  isRoot() {
-    return true;
+  showInMenu(selectedSourceIds) {
+    return selectedSourceIds.length === 1;
   },
 };
