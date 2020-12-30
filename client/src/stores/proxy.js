@@ -150,12 +150,16 @@ export default {
           .catch(console.error);
       }
     },
-    PVL_PROXY_NAME_FETCH({ getters, commit }, id) {
+    PVL_PROXY_NAME_FETCH({ getters, commit }, value) {
       const client = getters.PVL_NETWORK_CLIENT;
       if (client) {
-        client.remote.Lite.getProxyName(id)
+
+        client.remote.Lite.getProxyName(value.id)
           .then((info) => {
+            if (value.file !== undefined) info['file'] = value.file;
+            console.log('PVL_PROXY_NAME_FETCH ', info, value.id);
             commit('PVL_PROXY_NAME_SET', info);
+
           })
           .catch(console.error);
       }

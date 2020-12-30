@@ -41,13 +41,23 @@ export default {
       },
       openFiles(files) {
         const pathPrefix = this.path.slice(1).join('/');
+        console.log('openfiles path ', this.path);
+        console.log('openfiles pathPrefix ', pathPrefix);
+        console.log('openfiles type files ', typeof(files));
+        console.log('openfiles files ', files);
+        for (const file in files)
+          console.log(file);
+        console.log('openfiles len ', this.path.length, ' files ', files, ' prefix ', pathPrefix);
         const relativePathFiles =
           this.path.length > 1 ? files.map((f) => `${pathPrefix}/${f}`) : files;
         console.log('openfiles ', files, 'relative ', relativePathFiles);
         //TODO: check if file is for meshing
         this.client.remote.ProxyManager.open(relativePathFiles)
           .then((readerProxy) => {
-            this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
+            let info = { id: readerProxy.id, file: relativePathFiles};
+            console.log('then ', info);
+            // this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
+            this.$store.dispatch('PVL_PROXY_NAME_FETCH', info);
             this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
             this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
             this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
