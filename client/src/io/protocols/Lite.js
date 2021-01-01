@@ -17,5 +17,7 @@ export default function createMethods(session) {
     nextFibonacci: (value) =>
       session.call('paraview.lite.fibonacci.next', [value]),
     mesh: (value) => session.call('paraview.lite.mesh', [value]),
+    meshGetRefinementSurfaces: (value) =>
+      session.call('paraview.lite.mesh.surfaces', [value]),
   };
 }

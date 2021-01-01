@@ -1,9 +1,9 @@
 import { generateComponentWithServerBinding } from 'paraview-lite/src/proxyHelper';
 
+import { mapGetters } from 'vuex';
 import module from './module';
 
 /* eslint-disable prettier/prettier */
-import { mapGetters, mapActions } from 'vuex';
 
 export default generateComponentWithServerBinding(
   'Mesh',
@@ -24,26 +24,17 @@ export default generateComponentWithServerBinding(
         module,
         color: 'grey darken-2',
         normalMode: 3,
+        refinements: []
       };
     },
-    // computed: {
-    //   resolution: {
-    //     get() {
-    //       // register dependency
-    //       this.mtime; // eslint-disable-line
-    //       return this.resolution;
-    //     },
-    //     set(value) {
-    //       this.mtime++;
-    //       this.resolution = value;
-    //       // this.$forceUpdate();
-    //     },
-    //   },
-    //   mapGetters({
-    //     client: 'PVL_NETWORK_CLIENT',
-    //     active: 'PVL_MODULES_ACTIVE',
-    //   })
-    // },
+
+    mounted: function () {
+      this.client.remote.Lite.meshGetRefinementSurfaces('sergi_files2').then(function (value) {
+        this.refinements = value;
+        console.log('mounted meshGetRefinementSurfaces then items', this.refinements);
+      }.bind(this));
+    },
+
     computed: Object.assign(
       {
         file() {
@@ -72,12 +63,12 @@ export default generateComponentWithServerBinding(
 
     methods: Object.assign({
       openFiles() {
-        console.log('mesh openFiles');
-        console.log('mesh file', this.file, 'type ', typeof(this.file));
+        //TODO: call openFoam mesh commands and then open
+        console.log('mesh file', this.file, 'type ', typeof (this.file));
         //this.client.remote.ProxyManager.open('sergi_files2/foam.foam')
         this.client.remote.ProxyManager.open(this.file)
           .then((readerProxy) => {
-            let info = { id: readerProxy.id, file: this.file};
+            let info = { id: readerProxy.id, file: this.file };
             console.log('mesh then ', info);
             // this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
             this.$store.dispatch('PVL_PROXY_NAME_FETCH', info);

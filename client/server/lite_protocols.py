@@ -82,10 +82,101 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         'value': 5
       }
 
+    @exportRpc("paraview.lite.mesh.surfaces")
+    def meshGetRefinementSurfaces(self, path):
+      # file1 = open('constant/polyMesh/blockMeshDict', 'r') 
+      print('meshGetRefinementSurfaces1')
+      try:
+        print('meshGetRefinementSurfaces1_4')
+        #file1 = pen('C:\\rojects_web\\3d_samples\\sergi_files2\\constant\\polyMesh\\blockMeshDict', 'r') 
+        #print(file1)
+        # file1 = simple.OpenDataFile('C:\\projects_web\\3d_samples\\sergi_files2\\constant\\polyMesh\\blockMeshDict.txt', 'r') 
+        print('meshGetRefinementSurfaces2')
+        # Lines = file1.readlines() 
+        # print(Lines)
+        words = ['blas','pepe','tio','messi1','messi2','messi3','messi4']
+        # inside = False
+        # firstParenthesis = False
+        # current = 0
+        # prevLine = ''
+        # for line in Lines: 
+        #     if (not inside):
+        #         print('if')
+        #         if (line.find('boundary') != -1):
+        #             inside = True
+        #             if (line.find('(') != -1):
+        #                 open = line.count('(')
+        #                 close = line.count(')')
+        #                 current = current + open - close
+        #                 firstParenthesis = True
+        #     else:
+        #         print('else')
+        #         pos = line.find('{')
+        #         if ( pos != -1):
+        #             word = line[0:pos].strip()
+        #             if len(word) == 0:
+        #                 word = prevLine.strip()
+        #             words.append(word)
+        #         open = line.count('(')
+        #         close = line.count(')')
+        #         current = current + open - close
+        #         if current == 0 and firstParenthesis:
+        #             print('exit')
+        #             break
+        #     prevLine = line
+        #     # print("Line{}: {}".format(count, line.strip())) 
+        # print('return')
+        print(words)
+        return words
+
+      except expression as identifier:
+        print('excepy', identifier)
+        pass
+
+
+    #   print('meshGetRefinementSurfaces', path)
+    #   #file1 = simple.OpenDataFile('C:\\projects_web\\3d_samples\\sergi_files2\\constant\\polyMesh\\blockMeshDict') 
+    #   # file1 = open('constant/polyMesh/blockMeshDict', 'r') 
+    #   #Lines = file1.readlines() 
+    #   words = []
+    #   # inside = False
+    #   # firstParenthesis = False
+    #   # current = 0
+    #   # prevLine = ''
+    #   # for line in Lines: 
+    #   #     if (not inside):
+    #   #         if (line.find('boundary') != -1):
+    #   #             inside = True
+    #   #             if (line.find('(') != -1):
+    #   #                 open = line.count('(')
+    #   #                 close = line.count(')')
+    #   #                 current = current + open - close
+    #   #                 firstParenthesis = True
+    #   #     else:
+    #   #         pos = line.find('{')
+    #   #         if ( pos != -1):
+    #   #             word = line[0:pos].strip()
+    #   #             if len(word) == 0:
+    #   #                 word = prevLine.strip()
+    #   #             words.append(word)
+    #   #         open = line.count('(')
+    #   #         close = line.count(')')
+    #   #         current = current + open - close
+    #   #         if current == 0 and firstParenthesis:
+    #   #             print('exit')
+    #   #             break
+    #   #     prevLine = line
+    #       # print("Line{}: {}".format(count, line.strip())) 
+
+    #   print(words)
+    #   return words
+
+
     @exportRpc("paraview.lite.mesh")
     def mesh(self, path):
       print('mesh copy from ', self.data_dir + 'sergi_files2', ' to ', self.data_dir + path)
       copy_tree(self.data_dir + 'sergi_files2', self.data_dir + path)
+
 
     @exportRpc("paraview.lite.lut.get")
     def getLookupTableForArrayName(self, name, numSamples = 255):

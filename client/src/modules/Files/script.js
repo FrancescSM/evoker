@@ -55,7 +55,7 @@ export default {
         this.client.remote.ProxyManager.open(relativePathFiles)
           .then((readerProxy) => {
             let info = { id: readerProxy.id, file: relativePathFiles};
-            console.log('then ', info);
+            console.log('files then ', info);
             // this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
             this.$store.dispatch('PVL_PROXY_NAME_FETCH', info);
             this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
