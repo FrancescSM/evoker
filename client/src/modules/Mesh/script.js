@@ -30,8 +30,9 @@ export default generateComponentWithServerBinding(
 
     mounted: function () {
       this.client.remote.Lite.meshGetRefinementSurfaces('sergi_files2').then(function (value) {
-        this.refinements = value;
+        value.forEach(element => this.refinements.push({label:element,min:0,max:0}));
         console.log('mounted meshGetRefinementSurfaces then items', this.refinements);
+        // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
       }.bind(this));
     },
 
@@ -63,6 +64,9 @@ export default generateComponentWithServerBinding(
 
     methods: Object.assign({
       openFiles() {
+
+        this.refinements.forEach(element => console.log(parseInt(element.min),parseInt(element.max)));
+        console.log('resolution ', this.resolution);
         //TODO: call openFoam mesh commands and then open
         console.log('mesh file', this.file, 'type ', typeof (this.file));
         //this.client.remote.ProxyManager.open('sergi_files2/foam.foam')
