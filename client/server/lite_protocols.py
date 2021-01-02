@@ -84,17 +84,10 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("paraview.lite.mesh.surfaces")
     def meshGetRefinementSurfaces(self, path):
-      # file1 = open('constant/polyMesh/blockMeshDict', 'r') 
-      print('meshGetRefinementSurfaces1')
       try:
-        print('meshGetRefinementSurfaces1_4')
-        file1 = open('C:\\projects_web\\3d_samples\\sergi_files2\\constant\\polyMesh\\blockMeshDict', 'r') 
-        #print(file1)
-        # file1 = simple.OpenDataFile('C:\\projects_web\\3d_samples\\sergi_files2\\constant\\polyMesh\\blockMeshDict.txt', 'r') 
-        print('meshGetRefinementSurfaces2')
+        fileName = self.data_dir + path + '\\constant\\polyMesh\\blockMeshDict'
+        file1 = open(fileName, 'r') 
         Lines = file1.readlines() 
-        # print(Lines)
-        # words = ['blas','pepe','tio','messi1','messi2','messi3','messi4']
         words = []
         inside = False
         firstParenthesis = False
@@ -102,7 +95,6 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         prevLine = ''
         for line in Lines: 
             if (not inside):
-                print('if')
                 if (line.find('boundary') != -1):
                     inside = True
                     if (line.find('(') != -1):
@@ -111,7 +103,6 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
                         current = current + openParenthesis - closeParenthesis
                         firstParenthesis = True
             else:
-                print('else')
                 pos = line.find('{')
                 if ( pos != -1):
                     word = line[0:pos].strip()
@@ -122,12 +113,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
                 closeParenthesis = line.count(')')
                 current = current + openParenthesis - closeParenthesis
                 if current == 0 and firstParenthesis:
-                    print('exit')
                     break
             prevLine = line
-            # print("Line{}: {}".format(count, line.strip())) 
-        print('return')
-        print(words)
         return words
 
       except Exception as e:
