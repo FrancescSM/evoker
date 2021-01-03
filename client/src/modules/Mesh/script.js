@@ -29,7 +29,7 @@ export default generateComponentWithServerBinding(
     },
 
     mounted: function () {
-      this.client.remote.Lite.meshGetRefinementSurfaces('sergi_files2').then(function (value) {
+      this.client.remote.Lite.meshGetRefinementSurfaces(this.path).then(function (value) {
         value.forEach(element => this.refinements.push({label:element,min:0,max:0}));
         console.log('mounted meshGetRefinementSurfaces then items', this.refinements);
         // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
@@ -41,6 +41,10 @@ export default generateComponentWithServerBinding(
         file() {
           const nameMeta = this.names[this.proxies[0]];
           return nameMeta ? nameMeta.file : 'No file';
+        },
+        path() {
+          const nameMeta = this.names[this.proxies[0]];
+          return nameMeta ? nameMeta.file[0].split('/')[0] : 'No path';
         },
         resolution: {
           get() {
@@ -67,20 +71,27 @@ export default generateComponentWithServerBinding(
 
         this.refinements.forEach(element => console.log(parseInt(element.min),parseInt(element.max)));
         console.log('resolution ', this.resolution);
+
+        this.client.remote.Lite.meshRun(this.path, this.resolution).then(function () {
+          console.log('meshRun');
+          // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
+        });
+
+
         //TODO: call openFoam mesh commands and then open
-        console.log('mesh file', this.file, 'type ', typeof (this.file));
-        //this.client.remote.ProxyManager.open('sergi_files2/foam.foam')
-        this.client.remote.ProxyManager.open(this.file)
-          .then((readerProxy) => {
-            let info = { id: readerProxy.id, file: this.file };
-            console.log('mesh then ', info);
-            // this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
-            this.$store.dispatch('PVL_PROXY_NAME_FETCH', info);
-            this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
-            this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
-            this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
-          })
-          .catch(console.error);
+        // console.log('mesh file', this.file, 'type ', typeof (this.file));
+        // //this.client.remote.ProxyManager.open('sergi_files2/foam.foam')
+        // this.client.remote.ProxyManager.open(this.file)
+        //   .then((readerProxy) => {
+        //     let info = { id: readerProxy.id, file: this.file };
+        //     console.log('mesh then ', info);
+        //     // this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
+        //     this.$store.dispatch('PVL_PROXY_NAME_FETCH', info);
+        //     this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
+        //     this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
+        //     this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
+        //   })
+        //   .catch(console.error);
       },
     }),
   }
