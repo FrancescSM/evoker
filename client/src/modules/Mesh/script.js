@@ -72,8 +72,8 @@ export default generateComponentWithServerBinding(
         this.refinements.forEach(element => console.log(parseInt(element.min),parseInt(element.max)));
         console.log('resolution ', this.resolution);
 
-        this.client.remote.Lite.meshRun(this.path, this.resolution).then(function () {
-          console.log('meshRun');
+        this.client.remote.Lite.meshRun(this.path, this.resolution).then(function (value) {
+          console.log('meshRun', value);
           // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
         });
 

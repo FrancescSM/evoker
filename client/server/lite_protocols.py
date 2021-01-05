@@ -1,4 +1,4 @@
-import os, time
+import os, time, re
 
 from wslink import register as exportRpc
 
@@ -129,6 +129,22 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
     @exportRpc("paraview.lite.mesh.run")
     def meshRun(self, path, resolution):
       print('mesh run path', path, ' resolution ', resolution)
+      fileName = self.data_dir + path + '\\constant\\polyMesh\\blockMeshDict'
+      with open(fileName, "r") as f:
+        s=f.read()
+      #clean up the C/C++ comments
+      def stripcomments(text):
+        return re.sub('//.*?(\r\n?|\n)|/\*.*?\*/', '', text, flags=re.S)
+      s=stripcomments(s)
+      s = s[s.find('vertices'):]
+      s = s[:s.find(';')]
+      # extract the vertices into a list of tuples
+      r1 = re.search(r'vertices\s*\(\s*(.*)\s*\)', s, re.DOTALL)
+      vertices = [(float(v[0]),float(v[1]),float(v[2]))
+              for v in re.findall(r'\(\s*([-0-9.]+)\s+([-0-9.]+)\s+([-0-9.]+)\s*\)', r1.group(1))]
+
+      print(vertices)
+      return vertices
 
     @exportRpc("paraview.lite.lut.get")
     def getLookupTableForArrayName(self, name, numSamples = 255):
