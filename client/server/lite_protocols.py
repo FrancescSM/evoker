@@ -1,4 +1,4 @@
-import os, time, re
+import os, time, re, math
 
 from wslink import register as exportRpc
 
@@ -142,8 +142,15 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       r1 = re.search(r'vertices\s*\(\s*(.*)\s*\)', s, re.DOTALL)
       vertices = [(float(v[0]),float(v[1]),float(v[2]))
               for v in re.findall(r'\(\s*([-0-9.]+)\s+([-0-9.]+)\s+([-0-9.]+)\s*\)', r1.group(1))]
-
-      print(vertices)
+      maxVal = max(vertices)
+      minVal = min(vertices)
+      r = resolution/1000
+      cellsX = math.floor((maxVal[0] - minVal[0])/r)
+      cellsY = math.floor((maxVal[1] - minVal[1])/r)
+      cellsZ = math.floor((maxVal[2] - minVal[2])/r)
+      f = open(self.data_dir + path + '\\UISettings', 'w')
+      f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');')
+      f.close()
       return vertices
 
     @exportRpc("paraview.lite.lut.get")

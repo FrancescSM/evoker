@@ -42,7 +42,13 @@ export default {
               }
             }
           })
-          .catch(console.error);
+          .catch(function(reason) {
+            console.log(
+              'PVL_TIME_FETCH_VALUES unresolved issue at paraview ',
+              reason
+            );
+         });
+          // .catch(console.error);
       }
     },
     PVL_TIME_FETCH_ACTIVE_INDEX({ getters, commit }) {
