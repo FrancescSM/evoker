@@ -129,7 +129,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
     @exportRpc("paraview.lite.mesh.run")
     def meshRun(self, path, resolution):
       print('mesh run path: ', self.data_dir + path, '; resolution: ', resolution)
-      fileName = self.data_dir + path + '\\constant\\polyMesh\\blockMeshDict'
+      fileName = self.data_dir + path + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
       #clean up the C/C++ comments
