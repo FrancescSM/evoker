@@ -128,7 +128,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("paraview.lite.mesh.run")
     def meshRun(self, path, resolution):
-      print('mesh run path', path, ' resolution ', resolution)
+      print('mesh run path: ', self.data_dir + path, '; resolution: ', resolution)
       fileName = self.data_dir + path + '\\constant\\polyMesh\\blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
@@ -144,6 +144,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
               for v in re.findall(r'\(\s*([-0-9.]+)\s+([-0-9.]+)\s+([-0-9.]+)\s*\)', r1.group(1))]
       maxVal = max(vertices)
       minVal = min(vertices)
+      print('maxVal', maxVal)
+      print('minVal', minVal)
       r = resolution/1000
       cellsX = math.floor((maxVal[0] - minVal[0])/r)
       cellsY = math.floor((maxVal[1] - minVal[1])/r)
@@ -151,6 +153,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       f = open(self.data_dir + path + '\\UISettings', 'w')
       f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');')
       f.close()
+      print('exit',self.data_dir + path + '\\UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')
       return vertices
 
     @exportRpc("paraview.lite.lut.get")
