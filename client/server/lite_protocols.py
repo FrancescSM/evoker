@@ -38,7 +38,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
     def __init__(self, data_dir, **kwargs):
       super(pv_protocols.ParaViewWebProtocol, self).__init__()
       self.lineContext = None
-      self.data_dir = data_dir + '\\'
+      self.data_dir = data_dir + '/'
 
     @exportRpc("paraview.lite.proxy.name")
     def getProxyName(self, pid):
