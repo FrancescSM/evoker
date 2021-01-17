@@ -85,7 +85,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
     @exportRpc("paraview.lite.mesh.surfaces")
     def meshGetRefinementSurfaces(self, path):
       try:
-        fileName = self.data_dir + path + '\\constant\\polyMesh\\blockMeshDict'
+        fileName = self.data_dir + path + '/constant/polyMesh/blockMeshDict'
         file1 = open(fileName, 'r') 
         Lines = file1.readlines() 
         words = []
