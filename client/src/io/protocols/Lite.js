@@ -19,7 +19,7 @@ export default function createMethods(session) {
     mesh: (value) => session.call('paraview.lite.mesh', [value]),
     meshGetRefinementSurfaces: (value) =>
       session.call('paraview.lite.mesh.surfaces', [value]),
-    meshRun: (path, resolution) =>
-      session.call('paraview.lite.mesh.run', [path, resolution]),
+    meshRun: (path, resolution, refinements) =>
+      session.call('paraview.lite.mesh.run', [path, resolution, refinements]),
   };
 }

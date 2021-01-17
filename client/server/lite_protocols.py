@@ -127,8 +127,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       copy_tree(self.data_dir + 'sergi_files2', self.data_dir + path)
 
     @exportRpc("paraview.lite.mesh.run")
-    def meshRun(self, path, resolution):
-      print('mesh run path: ', self.data_dir + path, '; resolution: ', resolution)
+    def meshRun(self, path, resolution, refinements):
+      print('mesh run path: ', self.data_dir + path, '; resolution: ', resolution, '; refinements: ', refinements)
       fileName = self.data_dir + path + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
@@ -151,7 +151,12 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       cellsY = math.floor((maxVal[1] - minVal[1])/r)
       cellsZ = math.floor((maxVal[2] - minVal[2])/r)
       f = open(self.data_dir + path + '\\UISettings', 'w')
-      f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');')
+      f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');\n')
+      for refinement in refinements:
+        f.write('min' + refinement['label'] + ' ' + str(refinement['min']) + ';\n')
+        print('min' + refinement['label'] + ' ' + str(refinement['min']) + ';')
+        f.write('max' + refinement['label'] + ' ' + str(refinement['max']) + ';\n')
+        print('max' + refinement['label'] + ' ' + str(refinement['max']) + ';')
       f.close()
       print('exit',self.data_dir + path + '\\UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')
       return vertices
