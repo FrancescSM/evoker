@@ -1,4 +1,5 @@
 import os, time, re, math
+# import time
 
 from wslink import register as exportRpc
 
@@ -121,11 +122,6 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         print('except ', e)
         pass
 
-    @exportRpc("paraview.lite.mesh")
-    def mesh(self, path):
-      print('mesh copy from ', self.data_dir + 'sergi_files2', ' to ', self.data_dir + path)
-      copy_tree(self.data_dir + 'sergi_files2', self.data_dir + path)
-
     @exportRpc("paraview.lite.mesh.run")
     def meshRun(self, path, resolution, refinements):
       print('mesh run path: ', self.data_dir + path, '; resolution: ', resolution, '; refinements: ', refinements)
@@ -159,6 +155,9 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         print('max' + refinement['label'] + ' ' + str(refinement['max']) + ';')
       f.close()
       print('exit',self.data_dir + path + '\\UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')
+      
+      # time.sleep(5)
+
       return vertices
 
     @exportRpc("paraview.lite.lut.get")
