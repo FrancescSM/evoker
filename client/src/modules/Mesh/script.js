@@ -72,27 +72,30 @@ export default generateComponentWithServerBinding(
         this.refinements.forEach(element => console.log(parseInt(element.min),parseInt(element.max)));
         console.log('resolution ', this.resolution);
         console.log('refinements ', this.refinements);
-
+        let that = this;
         this.client.remote.Lite.meshRun(this.path, this.resolution, this.refinements).then(function (value) {
           console.log('meshRun', value);
           // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
+
+          //TODO: call openFoam mesh commands and then open
+          console.log('mesh file', that.file, 'type ', typeof (that.file));
+
+          //that.client.remote.ProxyManager.open('sergi_files2/foam.foam')
+          that.client.remote.ProxyManager.open(that.file)
+            .then((readerProxy) => {
+              let info = { id: readerProxy.id, file: that.file };
+              console.log('mesh then ', info);
+              // that.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
+              that.$store.dispatch('PVL_PROXY_NAME_FETCH', info);
+              that.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
+              that.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
+              that.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
+            })
+            .catch(console.error);
         });
 
 
-        //TODO: call openFoam mesh commands and then open
-        // console.log('mesh file', this.file, 'type ', typeof (this.file));
-        // //this.client.remote.ProxyManager.open('sergi_files2/foam.foam')
-        // this.client.remote.ProxyManager.open(this.file)
-        //   .then((readerProxy) => {
-        //     let info = { id: readerProxy.id, file: this.file };
-        //     console.log('mesh then ', info);
-        //     // this.$store.dispatch('PVL_PROXY_NAME_FETCH', readerProxy.id);
-        //     this.$store.dispatch('PVL_PROXY_NAME_FETCH', info);
-        //     this.$store.dispatch('PVL_PROXY_PIPELINE_FETCH');
-        //     this.$store.dispatch('PVL_MODULES_ACTIVE_CLEAR');
-        //     this.$store.commit('PVL_PROXY_SELECTED_IDS_SET', [readerProxy.id]);
-        //   })
-        //   .catch(console.error);
+
       },
     }),
   }

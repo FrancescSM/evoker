@@ -156,6 +156,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       f.close()
       print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')     
       subprocess.run(["blockMesh", "-case", fullPath])
+      subprocess.run(["snappyHexMesh", "-case", fullPath])
       # time.sleep(5)
 
       return vertices
