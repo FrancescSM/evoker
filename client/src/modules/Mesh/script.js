@@ -13,7 +13,7 @@ export default generateComponentWithServerBinding(
     resolution: {
       name: 'Resolution',
       autoApply: false,
-      default: 0.5,
+      default: 500,
       subProxy: 'ClipType',
     },
   },

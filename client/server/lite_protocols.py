@@ -1,5 +1,4 @@
-import os, time, re, math
-# import time
+import os, time, re, math, subprocess
 
 from wslink import register as exportRpc
 
@@ -124,8 +123,9 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("paraview.lite.mesh.run")
     def meshRun(self, path, resolution, refinements):
-      print('mesh run path: ', self.data_dir + path, '; resolution: ', resolution, '; refinements: ', refinements)
-      fileName = self.data_dir + path + '/constant/polyMesh/blockMeshDict'
+      fullPath = self.data_dir + path
+      print('mesh run path: ', fullPath, '; resolution: ', resolution, '; refinements: ', refinements)
+      fileName = fullPath + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
       #clean up the C/C++ comments
@@ -146,7 +146,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       cellsX = math.floor((maxVal[0] - minVal[0])/r)
       cellsY = math.floor((maxVal[1] - minVal[1])/r)
       cellsZ = math.floor((maxVal[2] - minVal[2])/r)
-      f = open(self.data_dir + path + '\\UISettings', 'w')
+      f = open(fullPath + '/UISettings', 'w')
       f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');\n')
       for refinement in refinements:
         f.write('min' + refinement['label'] + ' ' + str(refinement['min']) + ';\n')
@@ -154,8 +154,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         f.write('max' + refinement['label'] + ' ' + str(refinement['max']) + ';\n')
         print('max' + refinement['label'] + ' ' + str(refinement['max']) + ';')
       f.close()
-      print('exit',self.data_dir + path + '\\UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')
-      
+      print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')     
+      subprocess.run(["blockMesh", "-case", fullPath])
       # time.sleep(5)
 
       return vertices
