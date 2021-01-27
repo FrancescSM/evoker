@@ -16,6 +16,24 @@ export default generateComponentWithServerBinding(
       default: 500,
       subProxy: 'ClipType',
     },
+    xTopology: {
+      name: 'xTopology',
+      autoApply: false,
+      default: 1,
+      subProxy: 'ClipType',
+    },
+    yTopology: {
+      name: 'yTopology',
+      autoApply: false,
+      default: 1,
+      subProxy: 'ClipType',
+    },
+    zTopology: {
+      name: 'zTopology',
+      autoApply: false,
+      default: 1,
+      subProxy: 'ClipType',
+    }
   },
   {
     name: 'Mesh',
@@ -58,6 +76,42 @@ export default generateComponentWithServerBinding(
             // this.$forceUpdate();
           },
         },
+        xTopology: {
+          get() {
+            // register dependency
+            this.mtime; // eslint-disable-line
+            return this.xTopology;
+          },
+          set(value) {
+            this.mtime++;
+            this.xTopology = value;
+            // this.$forceUpdate();
+          },
+        },
+        yTopology: {
+          get() {
+            // register dependency
+            this.mtime; // eslint-disable-line
+            return this.yTopology;
+          },
+          set(value) {
+            this.mtime++;
+            this.yTopology = value;
+            // this.$forceUpdate();
+          },
+        },
+        zTopology: {
+          get() {
+            // register dependency
+            this.mtime; // eslint-disable-line
+            return this.zTopology;
+          },
+          set(value) {
+            this.mtime++;
+            this.zTopology = value;
+            // this.$forceUpdate();
+          },
+        }
       },
       mapGetters({
         proxies: 'PVL_PROXY_SELECTED_IDS',
@@ -73,7 +127,7 @@ export default generateComponentWithServerBinding(
         console.log('resolution ', this.resolution);
         console.log('refinements ', this.refinements);
         let that = this;
-        this.client.remote.Lite.meshRun(this.path, this.resolution, this.refinements).then(function (value) {
+        this.client.remote.Lite.meshRun(this.path, this.resolution, this.refinements, this.xTopology, this.yTopology, this.zTopology).then(function (value) {
           console.log('meshRun', value);
           // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
 

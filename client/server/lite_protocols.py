@@ -74,14 +74,6 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         'centerOfRotation': tuple(view.CenterOfRotation),
       }
 
-    @exportRpc("paraview.lite.fibonacci.next")
-    def nextFibonacci(self, value):
-      # fibos = [1,2,3,5,8,13,21,34,55,89]
-      print('fibo next ', value)
-      return {
-        'value': 5
-      }
-
     @exportRpc("paraview.lite.mesh.surfaces")
     def meshGetRefinementSurfaces(self, path):
       try:
@@ -122,9 +114,10 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         pass
 
     @exportRpc("paraview.lite.mesh.run")
-    def meshRun(self, path, resolution, refinements):
+    def meshRun(self, path, resolution, refinements, xTopology, yTopology, zTopology):
       fullPath = self.data_dir + path
       print('mesh run path: ', fullPath, '; resolution: ', resolution, '; refinements: ', refinements)
+      print('mesh run xTopology: ', xTopology, '; yTopology: ', yTopology, '; zTopology: ', zTopology)
       fileName = fullPath + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()

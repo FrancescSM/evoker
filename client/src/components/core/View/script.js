@@ -165,12 +165,6 @@ export default {
       this.viewStream.pushCamera();
     });
 
-    // Dummy POC of adding new commands to Lite protocol
-    //this.client.remote.Lite.nextFibonacci('5').then((value) => {
-    //   console.log('nextFibonacci', value);
-    //});
-
-
   },
   computed: mapGetters({
     client: 'PVL_NETWORK_CLIENT',
