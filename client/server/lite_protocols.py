@@ -141,15 +141,21 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       cellsZ = math.floor((maxVal[2] - minVal[2])/r)
       f = open(fullPath + '/UISettings', 'w')
       f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');\n')
+      f.write('xTopology ' + str(xTopology) + ';\n')
+      f.write('yTopology ' + str(yTopology) + ';\n')
+      f.write('zTopology ' + str(zTopology) + ';\n')
       for refinement in refinements:
         f.write('min' + refinement['label'] + ' ' + str(refinement['min']) + ';\n')
         print('min' + refinement['label'] + ' ' + str(refinement['min']) + ';')
         f.write('max' + refinement['label'] + ' ' + str(refinement['max']) + ';\n')
         print('max' + refinement['label'] + ' ' + str(refinement['max']) + ';')
       f.close()
-      print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')     
+      print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')    
+      numberOfSubdomains = xTopology * yTopology * zTopology 
       subprocess.run(["blockMesh", "-case", fullPath])
-      subprocess.run(["snappyHexMesh", "-case", fullPath])
+      subprocess.run(["decomposePar", "-case", fullPath])
+      subprocess.run(["mpirun", "--np", str(numberOfSubdomains), "snappyHexMesh", "-parallel", "-case", fullPath])
+      subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
       # time.sleep(5)
 
       return vertices
