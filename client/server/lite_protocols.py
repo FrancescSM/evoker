@@ -118,6 +118,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       fullPath = self.data_dir + path
       print('mesh run path: ', fullPath, '; resolution: ', resolution, '; refinements: ', refinements)
       print('mesh run xTopology: ', xTopology, '; yTopology: ', yTopology, '; zTopology: ', zTopology)
+      subprocess.run(["rm", "-rf", "processor*"])
+      subprocess.run(["rm", "-rf", "0.*"])
       fileName = fullPath + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
@@ -151,11 +153,17 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         print('max' + refinement['label'] + ' ' + str(refinement['max']) + ';')
       f.close()
       print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')    
-      numberOfSubdomains = xTopology * yTopology * zTopology 
-      subprocess.run(["blockMesh", "-case", fullPath])
-      subprocess.run(["decomposePar", "-case", fullPath])
-      subprocess.run(["mpirun", "--np", str(numberOfSubdomains), "snappyHexMesh", "-parallel", "-case", fullPath])
-      subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
+      numberOfSubdomains = xTopology * yTopology * zTopology
+      f.write('numberOfSubdomains ' + str(numberOfSubdomains) + ';\n')
+      if numberOfSubdomains == 1:
+        subprocess.run(["blockMesh", "-case", fullPath])
+        subprocess.run(["snappyHexMesh", "-case", fullPath])
+      else:
+        subprocess.run(["blockMesh", "-case", fullPath])
+        subprocess.run(["decomposePar", "-case", fullPath])
+        subprocess.run(["mpirun", "--np", str(numberOfSubdomains), "snappyHexMesh", "-parallel", "-case", fullPath])
+        subprocess.run(["reconstructParMesh", "-case", fullPath])
+        # subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
       # time.sleep(5)
 
       return vertices
