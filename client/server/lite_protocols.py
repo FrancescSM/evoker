@@ -118,8 +118,13 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       fullPath = self.data_dir + path
       print('mesh run path: ', fullPath, '; resolution: ', resolution, '; refinements: ', refinements)
       print('mesh run xTopology: ', xTopology, '; yTopology: ', yTopology, '; zTopology: ', zTopology)
-      subprocess.run(["rm", "-rf", "processor*"])
-      subprocess.run(["rm", "-rf", "0.*"])
+
+      processorFolders = fullPath + "/processor*" 
+      zeroFolders = fullPath + "/0.*"
+      print(zeroFolders)
+      print(processorFolders)
+      # subprocess.run(["rm", "-rf", processorFolders])
+      # subprocess.run(["rm", "-rf", zeroFolders])
       fileName = fullPath + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
