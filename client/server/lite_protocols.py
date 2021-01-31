@@ -121,10 +121,10 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
       processorFolders = fullPath + "/processor*" 
       zeroFolders = fullPath + "/0.*"
-      print(zeroFolders)
-      print(processorFolders)
-      # subprocess.run(["rm", "-rf", processorFolders])
-      # subprocess.run(["rm", "-rf", zeroFolders])
+      #print(zeroFolders)
+      #print(processorFolders)
+      subprocess.run("rm -rf " + processorFolders, shell=True)
+      subprocess.run("rm -rf " + zeroFolders, shell=True)
       fileName = fullPath + '/constant/polyMesh/blockMeshDict'
       with open(fileName, "r") as f:
         s=f.read()
