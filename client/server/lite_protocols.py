@@ -113,6 +113,39 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         print('except ', e)
         pass
 
+    @exportRpc("paraview.lite.mesh.persistence")
+    def meshGetPersistence(self, path):
+      try:
+        print('meshGetPersistence')
+        fileName = self.data_dir + path + '/UISettings'
+        file1 = open(fileName, 'r') 
+        Lines = file1.readlines() 
+        ret = {}
+        for line in Lines: 
+          if (line.find('resolution') != -1):
+            value = line.split()[1]
+            val = value.split(';')[0]
+            ret['resolution'] = val
+          if (line.find('xTopology') != -1):
+            value = line.split()[1]
+            val = value.split(';')[0]
+            ret['xTopology'] = val
+          if (line.find('yTopology') != -1):
+            value = line.split()[1]
+            val = value.split(';')[0]
+            ret['yTopology'] = val
+          if (line.find('zTopology') != -1):
+            value = line.split()[1]
+            val = value.split(';')[0]
+            ret['zTopology'] = val
+
+        print(ret)
+        return ret
+
+      except Exception as e:
+        print('persistence data not found')
+        pass
+
     @exportRpc("paraview.lite.mesh.run")
     def meshRun(self, path, resolution, refinements, xTopology, yTopology, zTopology):
       fullPath = self.data_dir + path
@@ -147,6 +180,10 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       cellsY = math.floor((maxVal[1] - minVal[1])/r)
       cellsZ = math.floor((maxVal[2] - minVal[2])/r)
       f = open(fullPath + '/UISettings', 'w')
+      # ->persistence
+      f.write('resolution ' + str(resolution) + ';\n')
+      #if.write('refinements ' + str(refinements) + ';\n')
+      # <-persistence
       f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');\n')
       f.write('xTopology ' + str(xTopology) + ';\n')
       f.write('yTopology ' + str(yTopology) + ';\n')
@@ -168,7 +205,6 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         subprocess.run(["mpirun", "--np", str(numberOfSubdomains), "snappyHexMesh", "-parallel", "-case", fullPath])
         subprocess.run(["reconstructParMesh", "-case", fullPath])
         # subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
-      # time.sleep(5)
       print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')    
       return vertices
 

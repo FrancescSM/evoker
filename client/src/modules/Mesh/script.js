@@ -52,6 +52,29 @@ export default generateComponentWithServerBinding(
         console.log('mounted meshGetRefinementSurfaces then items', this.refinements);
         // this.refinements.forEach(element => console.log(typeof(element.min),element.min,typeof(element.max),element.max));
       }.bind(this));
+      this.client.remote.Lite.meshGetPersistence(this.path).then(function (persistence) {
+        if (persistence != null){
+          console.log('persistence:', persistence);
+          if (persistence.hasOwnProperty('resolution')){
+            this.resolution = persistence['resolution']
+            console.log('persistence resolution ', this.resolution);
+          }
+          if (persistence.hasOwnProperty('xTopology')){
+            this.xTopology = persistence['xTopology']
+            console.log('persistence xTopology ', this.xTopology);
+          }
+          if (persistence.hasOwnProperty('yTopology')){
+            this.yTopology = persistence['yTopology']
+            console.log('persistence yTopology ', this.xTopology);
+          }
+          if (persistence.hasOwnProperty('zTopology')){
+            this.zTopology = persistence['zTopology']
+            console.log('persistence zTopology ', this.xTopology);
+          }
+        }
+        else
+          console.log('persistence data not found using defaults');
+      }.bind(this));
     },
 
     computed: Object.assign(

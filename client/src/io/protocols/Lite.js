@@ -16,6 +16,8 @@ export default function createMethods(session) {
       session.call('paraview.lite.context.line.set', [visible, p1, p2]),
     meshGetRefinementSurfaces: (value) =>
       session.call('paraview.lite.mesh.surfaces', [value]),
+    meshGetPersistence: (value) =>
+      session.call('paraview.lite.mesh.persistence', [value]),
     meshRun: (path, resolution, refinements, xTopology, yTopology, zTopology) =>
       session.call('paraview.lite.mesh.run', [path, resolution, refinements, xTopology, yTopology, zTopology]),
   };
