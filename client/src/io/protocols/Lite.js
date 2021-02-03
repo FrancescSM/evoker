@@ -14,11 +14,18 @@ export default function createMethods(session) {
       session.call('paraview.lite.lut.set.preset', [arrayName, presetName]),
     updateLineContext: (visible = false, p1 = [0, 0, 0], p2 = [1, 1, 1]) =>
       session.call('paraview.lite.context.line.set', [visible, p1, p2]),
-    meshGetRefinementSurfaces: (value) =>
-      session.call('paraview.lite.mesh.surfaces', [value]),
-    meshGetPersistence: (value) =>
-      session.call('paraview.lite.mesh.persistence', [value]),
+    meshGetRefinementSurfaces: (path) =>
+      session.call('paraview.lite.mesh.surfaces', [path]),
+    meshGetPersistence: (path, refinements) =>
+      session.call('paraview.lite.mesh.persistence', [path, refinements]),
     meshRun: (path, resolution, refinements, xTopology, yTopology, zTopology) =>
-      session.call('paraview.lite.mesh.run', [path, resolution, refinements, xTopology, yTopology, zTopology]),
+      session.call('paraview.lite.mesh.run', [
+        path,
+        resolution,
+        refinements,
+        xTopology,
+        yTopology,
+        zTopology,
+      ]),
   };
 }

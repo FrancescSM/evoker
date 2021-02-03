@@ -114,9 +114,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         pass
 
     @exportRpc("paraview.lite.mesh.persistence")
-    def meshGetPersistence(self, path):
+    def meshGetPersistence(self, path, refinements):
       try:
-        print('meshGetPersistence')
         fileName = self.data_dir + path + '/UISettings'
         file1 = open(fileName, 'r') 
         Lines = file1.readlines() 
@@ -126,18 +125,31 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
             value = line.split()[1]
             val = value.split(';')[0]
             ret['resolution'] = val
-          if (line.find('xTopology') != -1):
+          elif (line.find('xTopology') != -1):
             value = line.split()[1]
             val = value.split(';')[0]
             ret['xTopology'] = val
-          if (line.find('yTopology') != -1):
+          elif (line.find('yTopology') != -1):
             value = line.split()[1]
             val = value.split(';')[0]
             ret['yTopology'] = val
-          if (line.find('zTopology') != -1):
+          elif (line.find('zTopology') != -1):
             value = line.split()[1]
             val = value.split(';')[0]
             ret['zTopology'] = val
+          else:
+            for refinement in refinements:
+              minLabel = 'min' + refinement['label']
+              maxLabel = 'max' + refinement['label']
+              if (line.find(minLabel) != -1):
+                value = line.split()[1]
+                val = value.split(';')[0]
+                refinement['min'] = val
+              if (line.find(maxLabel) != -1):
+                value = line.split()[1]
+                val = value.split(';')[0]
+                refinement['max'] = val
+        ret['refinements'] = refinements               
 
         print(ret)
         return ret
@@ -182,7 +194,6 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       f = open(fullPath + '/UISettings', 'w')
       # ->persistence
       f.write('resolution ' + str(resolution) + ';\n')
-      #if.write('refinements ' + str(refinements) + ';\n')
       # <-persistence
       f.write('NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ');\n')
       f.write('xTopology ' + str(xTopology) + ';\n')
