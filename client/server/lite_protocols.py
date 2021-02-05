@@ -35,10 +35,36 @@ except:
     pass
 
 class ParaViewLite(pv_protocols.ParaViewWebProtocol):
-    def __init__(self, data_dir, **kwargs):
+    def __init__(self, data_dir, pxm=None, **kwargs):
       super(pv_protocols.ParaViewWebProtocol, self).__init__()
       self.lineContext = None
       self.data_dir = data_dir + '/'
+      self.pxm = pxm
+
+    @exportRpc("pv.proxy.manager.create")
+    def customCreate(self, functionName, parentId, initialValues={}, skipDomain=False, subProxyValues={}):
+        response = self.pxm.create(functionName, parentId, initialValues, skipDomain, subProxyValues)
+        rep = simple.Show()
+        rep.Representation = 'Surface With Edges'
+        self.getApplication().InvokeEvent('UpdateEvent')
+
+        return response
+
+
+    @exportRpc("pv.proxy.manager.create.reader")
+    def customOpen(self, relativePath):
+        """
+        Open relative file paths, attempting to use the file extension to select
+        from the configured readers.
+        """
+        response = self.pxm.open(relativePath)
+
+        rep = simple.Show()
+        rep.Representation = 'Surface With Edges'
+        self.getApplication().InvokeEvent('UpdateEvent')
+
+        return response
+
 
     @exportRpc("paraview.lite.proxy.name")
     def getProxyName(self, pid):

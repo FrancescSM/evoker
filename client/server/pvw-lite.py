@@ -177,10 +177,13 @@ class _Server(pv_wslink.PVServerProtocol):
 
     def initialize(self):
         # Bring used components from ParaView
+        pxm_protocol = pv_protocols.ParaViewWebProxyManager(
+            allowedProxiesFile=_Server.proxies, baseDir=_Server.dataDir, fileToLoad=_Server.fileToLoad, allowUnconfiguredReaders=_Server.allReaders)
+
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebStartupRemoteConnection(_Server.dsHost, _Server.dsPort, _Server.rsHost, _Server.rsPort, _Server.rcPort))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebStartupPluginLoader(_Server.plugins))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebFileListing(_Server.dataDir, "Home", _Server.excludeRegex, _Server.groupRegex))
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebProxyManager(allowedProxiesFile=_Server.proxies, baseDir=_Server.dataDir, fileToLoad=_Server.fileToLoad, allowUnconfiguredReaders=_Server.allReaders))
+        self.registerVtkWebProtocol(pxm_protocol)
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebColorManager(pathToColorMaps=_Server.colorPalette, showBuiltin=_Server.showBuiltin))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebMouseHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort(_Server.viewportScale, _Server.viewportMaxWidth, _Server.viewportMaxHeight))
@@ -192,7 +195,7 @@ class _Server(pv_wslink.PVServerProtocol):
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebSaveData(baseSavePath=_Server.saveDataDir))
 
         # Bring used components from ParaView Lite
-        self.registerVtkWebProtocol(local_protocols.ParaViewLite(_Server.dataDir))
+        self.registerVtkWebProtocol(local_protocols.ParaViewLite(_Server.dataDir, pxm_protocol))
 
         # Update authentication key to use
         self.updateSecret(_Server.authKey)
