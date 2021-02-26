@@ -233,15 +233,18 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       numberOfSubdomains = xTopology * yTopology * zTopology
       f.write('numberOfSubdomains ' + str(numberOfSubdomains) + ';\n')
       f.close()
+
       if numberOfSubdomains == 1:
         subprocess.run(["blockMesh", "-case", fullPath])
         subprocess.run(["snappyHexMesh", "-case", fullPath])
       else:
         subprocess.run(["blockMesh", "-case", fullPath])
         subprocess.run(["decomposePar", "-case", fullPath])
-        subprocess.run(["mpirun", "--np", str(numberOfSubdomains), "snappyHexMesh", "-parallel", "-case", fullPath])
-        subprocess.run(["reconstructParMesh", "-case", fullPath])
-        # subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
+        command = "mpirun -n %d --host 51.103.138.43,51.103.166.0 bash /home/azureuser/remote.sh %s" % (numberOfSubdomains, fullPath)
+        #print("Running %s ..." % (command))
+        subprocess.run(command.split()) 
+        subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
+
       print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')    
       return vertices
 
