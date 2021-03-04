@@ -240,7 +240,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       else:
         subprocess.run(["blockMesh", "-case", fullPath])
         subprocess.run(["decomposePar", "-case", fullPath])
-        command = "mpirun -n %d --host 51.103.138.43,51.103.166.0 bash /home/azureuser/remote.sh %s" % (numberOfSubdomains, fullPath)
+        command = "mpirun -n %d --host 51.103.138.43,51.103.166.0 --oversubscribe bash /home/azureuser/remote.sh %s" % (numberOfSubdomains, fullPath)
         #print("Running %s ..." % (command))
         subprocess.run(command.split()) 
         subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
