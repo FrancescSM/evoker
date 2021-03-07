@@ -4,7 +4,6 @@ import { mapGetters } from 'vuex';
 import module from './module';
 
 /* eslint-disable prettier/prettier */
-
 export default generateComponentWithServerBinding(
   'Mesh',
   'Source',
@@ -39,13 +38,13 @@ export default generateComponentWithServerBinding(
     name: 'Mesh',
     data() {
       return {
+        label: 'Create',
         module,
         color: 'grey darken-2',
         normalMode: 3,
         refinements: []
       };
     },
-
     mounted: function () {
       this.client.remote.Lite.meshGetRefinementSurfaces(this.path).then(function (value) {
         value.forEach(element => this.refinements.push({label:element,min:0,max:0}));
@@ -148,8 +147,8 @@ export default generateComponentWithServerBinding(
     ),
 
     methods: Object.assign({
-      openFiles() {
-
+      createMesh() {
+        this.label = 'Computing'
         this.refinements.forEach(element => console.log(parseInt(element.min),parseInt(element.max)));
         console.log('resolution ', this.resolution);
         console.log('refinements ', this.refinements);

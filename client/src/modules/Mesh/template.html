@@ -167,7 +167,7 @@
 
 
   <v-card flat :class="$style.block">
-    <v-btn block outline color="indigo" v-if="create" @click="openFiles()">Create</v-btn>
+    <v-btn block outline color="indigo" v-if="create" @click="createMesh()">{{label}}</v-btn>
   </v-card>
 
   <v-container fluid grid-list-md v-if="hasChange() && !autoApply && !create" :class="$style.buttonBar">
