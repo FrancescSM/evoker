@@ -301,24 +301,25 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         #     firstLayerThickness	0.05;
         #     expansionRatio	1;
         # }
-        # meshQualityControls {
-        #     minTetQuality	1.0E-20;
-        #     minVol	1.0E-14;
-        #     maxInternalSkewness	4.0;
-        #     maxBoundarySkewness	20.0;
-        #     maxConcave	80.0;
-        #     minFaceWeight	0.05;
-        #     minVolRatio	0.01;
-        #     minTwist	0.05;
-        #     minArea	-1.0;
-        #     maxNonOrtho	65.0;
-        #     minTriangleTwist	-1.0;
-        #     minDeterminant	0.01;
-        #     errorReduction	0.75;
-        #     nSmoothScale	4;
-        #     relaxed {
-        #         maxNonOrtho	75.0; }
-        # }
+        writeFile.write('meshQualityControls {\n')
+        writeFile.write('    minTetQuality	1.0E-20;\n')
+        writeFile.write('    minVol	1.0E-14;\n')
+        writeFile.write('    maxInternalSkewness	4.0;\n')
+        writeFile.write('    maxBoundarySkewness	20.0;\n')
+        writeFile.write('    maxConcave	80.0;\n')
+        writeFile.write('    minFaceWeight	0.05;\n')
+        writeFile.write('    minVolRatio	0.01;\n')
+        writeFile.write('    minTwist	0.05;\n')
+        writeFile.write('    minArea	-1.0;\n')
+        writeFile.write('    maxNonOrtho	65.0;\n')
+        writeFile.write('    minTriangleTwist	-1.0;\n')
+        writeFile.write('    minDeterminant	0.01;\n')
+        writeFile.write('    errorReduction	0.75;\n')
+        writeFile.write('    nSmoothScale	4;\n')
+        writeFile.write('    relaxed {\n')
+        writeFile.write('        maxNonOrtho	75.0; }\n')
+        writeFile.write('}\n')
+        
         writeFile.write('mergeTolerance	1e-03;\n')
         writeFile.write('debug	0;\n')
 
