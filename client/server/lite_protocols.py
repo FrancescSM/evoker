@@ -232,7 +232,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
 
         writeFile.write('castellatedMesh	true;\n')
         writeFile.write('snap	true;\n')
-        writeFile.write('addLayers	false;\n\n')
+        writeFile.write('addLayers	false;\n')
 
         writeFile.write('geometry {\n')
         for surface in surfaces:
@@ -267,40 +267,31 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         writeFile.write('    implicitFeatureSnap true;\n')
         writeFile.write('    explicitFeatureSnap false;\n')
         writeFile.write('}\n')
-        # addLayersControls {
-        #     layers {
-        #         SFango {
-        #             nSurfaceLayers 0; }
-        #         Entrada {
-        #             nSurfaceLayers 0; }
-        #         SupLibre {
-        #             nSurfaceLayers 0; }
-        #         SAguaClar {
-        #             nSurfaceLayers 0; }
-        #         campana {
-        #             nSurfaceLayers 0; }
-        #         Default {
-        #             nSurfaceLayers 0; }
-        #     }
-        #     nSmoothSurfaceNormals	5;
-        #     slipFeatureAngle	30.0;
-        #     nBufferCellsNoExtrude	0;
-        #     nRelaxIter	5;
-        #     relativeSizes	false;
-        #     minMedianAxisAngle	90.0;
-        #     maxFaceThicknessRatio	0.5;
-        #     nSmoothNormals	3;
-        #     maxThicknessToMedialRatio	0.3;
-        #     nLayerIter	50;
-        #     minThickness	0.05;
-        #     nSmoothThickness	10;
-        #     nGrow	10;
-        #     nRelaxedIter	20;
-        #     concaveAngle	90.0;
-        #     featureAngle	60;
-        #     firstLayerThickness	0.05;
-        #     expansionRatio	1;
-        # }
+        writeFile.write('addLayersControls {\n')
+        writeFile.write('    layers {\n')
+        for surface in surfaces:
+            writeFile.write('        ' + surface + '{\n')
+            writeFile.write('            nSurfaceLayers 0; }\n')
+        writeFile.write('    }\n')
+        writeFile.write('    nSmoothSurfaceNormals	5;\n')
+        writeFile.write('    slipFeatureAngle	30.0;\n')
+        writeFile.write('    nBufferCellsNoExtrude	0;\n')
+        writeFile.write('    nRelaxIter	5;\n')
+        writeFile.write('    relativeSizes	false;\n')
+        writeFile.write('    minMedianAxisAngle	90.0;\n')
+        writeFile.write('    maxFaceThicknessRatio	0.5;\n')
+        writeFile.write('    nSmoothNormals	3;\n')
+        writeFile.write('    maxThicknessToMedialRatio	0.3;\n')
+        writeFile.write('    nLayerIter	50;\n')
+        writeFile.write('    minThickness	0.05;\n')
+        writeFile.write('    nSmoothThickness	10;\n')
+        writeFile.write('    nGrow	10;\n')
+        writeFile.write('    nRelaxedIter	20;\n')
+        writeFile.write('    concaveAngle	90.0;\n')
+        writeFile.write('    featureAngle	60;\n')
+        writeFile.write('    firstLayerThickness	0.05;\n')
+        writeFile.write('    expansionRatio	1;\n')
+        writeFile.write('}\n')
         writeFile.write('meshQualityControls {\n')
         writeFile.write('    minTetQuality	1.0E-20;\n')
         writeFile.write('    minVol	1.0E-14;\n')
@@ -319,7 +310,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         writeFile.write('    relaxed {\n')
         writeFile.write('        maxNonOrtho	75.0; }\n')
         writeFile.write('}\n')
-        
+
         writeFile.write('mergeTolerance	1e-03;\n')
         writeFile.write('debug	0;\n')
 
