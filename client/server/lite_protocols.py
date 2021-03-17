@@ -247,11 +247,11 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
                 if (not refinementSurfacesDone):
                     if (line.find('castellatedMeshControls') != -1):
                         begin.append(line)
-                    elif (line.find('castellatedMesh') != -1):
+                    elif (line.find('castellatedMesh') != -1 and line.find(';') != -1):
                         begin.append('castellatedMesh	true;\n')
-                    elif (line.find('snap') != -1):
+                    elif (line.find('snap') != -1 and line.find(';') != -1):
                         begin.append('snap	true;\n')
-                    elif (line.find('addLayers') != -1):
+                    elif (line.find('addLayers') != -1 and line.find(';') != -1):
                         begin.append('addLayers	false;\n')
                     elif (line.find('refinementSurfaces') != -1):
                         refinementSurfacesDone = True
@@ -264,6 +264,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
                             end.append(line)
                     else:
                         end.append(line)
+
         readFile.close()
 
         writeFile = open(fileName, "w")
