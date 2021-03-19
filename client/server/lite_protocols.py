@@ -399,10 +399,9 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       minVal = min(vertices)
       print('maxVal', maxVal)
       print('minVal', minVal)
-      r = resolution/1000
-      cellsX = math.floor((maxVal[0] - minVal[0])/r)
-      cellsY = math.floor((maxVal[1] - minVal[1])/r)
-      cellsZ = math.floor((maxVal[2] - minVal[2])/r)
+      cellsX = math.floor((maxVal[0] - minVal[0])/resolution)
+      cellsY = math.floor((maxVal[1] - minVal[1])/resolution)
+      cellsZ = math.floor((maxVal[2] - minVal[2])/resolution)
       f = open(fullPath + '/UISettings', 'w')
       # ->persistence
       f.write('resolution ' + str(resolution) + ';\n')
@@ -419,7 +418,7 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
       numberOfSubdomains = xTopology * yTopology * zTopology
       f.write('numberOfSubdomains ' + str(numberOfSubdomains) + ';\n')
       f.close()
-
+      start = time.time()
       if numberOfSubdomains == 1:
         subprocess.run(["blockMesh", "-case", fullPath])
         subprocess.run(["snappyHexMesh", "-case", fullPath])
@@ -430,8 +429,8 @@ class ParaViewLite(pv_protocols.ParaViewWebProtocol):
         #print("Running %s ..." % (command))
         subprocess.run(command.split()) 
         subprocess.run(["reconstructParMesh", "-latestTime", "-case", fullPath])
-
-      print('exit',fullPath + '/UISettings', 'NODES (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')    
+      end = time.time()
+      print('exit ELAPSED_TIME: ', end - start, '; CELLS: ', str(cellsX*cellsY*cellsZ), 'NODES: (' + str(cellsX) + ' ' + str(cellsY) + ' ' + str(cellsZ) + ')')    
       return vertices
 
     @exportRpc("paraview.lite.lut.get")
